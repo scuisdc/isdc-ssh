@@ -9,7 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 /**
- * Copyright (c) 2017 Peter Mao. All rights reserved.
+ * Copyright (c) 2017 Peter Mao). All rights reserved.
  * Created by mao on 17-7-21.
  */
 @RestController
@@ -31,7 +31,7 @@ public class UserController {
         user.setPassword(request.getPassword());
         user.setEnabled(true);
         if (userService.signUp(user)) {
-            return new Response<>(200);
+            return new Response<>(200, "注册成功");
         }
         return new Response<>(500, "注册失败");
     }
