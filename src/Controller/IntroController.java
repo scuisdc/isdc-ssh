@@ -24,7 +24,7 @@ public class IntroController {
     }
 
     @RequestMapping(value = "announce", method = RequestMethod.GET)
-    public Response listAll() {
+    public Response listAnnounce() {
         return new Response<>(200, announceService.listAll());
     }
 

@@ -8,16 +8,7 @@ public class SignUpRequest {
     private String userName;
     private String email;
     private String password;
-
-    public SignUpRequest() {
-    }
-
-
-    public SignUpRequest(String userName, String email, String password) {
-        this.userName = userName;
-        this.email = email;
-        this.password = password;
-    }
+    private String checkCode;
 
     public String getUserName() {
         return userName;
@@ -41,5 +32,13 @@ public class SignUpRequest {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public String getCheckCode() {
+        return checkCode;
+    }
+
+    public void setCheckCode(String checkCode) {
+        this.checkCode = checkCode;
     }
 }
