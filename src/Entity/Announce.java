@@ -1,6 +1,7 @@
 package Entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -10,6 +11,7 @@ import java.util.Date;
  * Created by mao on 17-7-22.
  */
 @Entity
+@JsonInclude(JsonInclude.Include.NON_NULL)
 @Table(name = "announce")
 public class Announce {
 
@@ -21,7 +23,8 @@ public class Announce {
     @Column(name = "title", unique = true, length = 25)
     private String title;
 
-    @Column(name = "content", columnDefinition = "text")
+    @Lob
+    @Column(name = "content")
     private String content;
 
     @JsonIgnore

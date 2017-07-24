@@ -13,7 +13,7 @@ import javax.persistence.*;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @Table(name = "blog_comment")
 public class Comment {
-    @JsonIgnore
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id;

@@ -52,7 +52,6 @@ public class UserDAOImpl implements UserDAO {
 
     @Override
     public void addUser(User user) {
-        //TODO:hash password
         user.generateToken();
         sessionFactory.getCurrentSession().persist(user);
     }
@@ -69,7 +68,6 @@ public class UserDAOImpl implements UserDAO {
 
     @Override
     public boolean updateUser(User user) {
-        //TODO: update user
         throw new NotImplementedException();
     }
 }
