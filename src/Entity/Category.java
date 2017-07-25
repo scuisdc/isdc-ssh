@@ -12,8 +12,8 @@ import java.util.List;
  */
 @Entity
 @JsonInclude(JsonInclude.Include.NON_NULL)
-@Table(name = "blog_tag")
-public class Tag {
+@Table(name = "blog_category")
+public class Category {
     @JsonIgnore
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -22,6 +22,7 @@ public class Tag {
     @Column(name = "name")
     private String name;
 
+    @JsonIgnore
     @ManyToMany(targetEntity = Post.class, cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Post> post;
 

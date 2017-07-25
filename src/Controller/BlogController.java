@@ -1,6 +1,7 @@
 package Controller;
 
 import DTO.Response;
+import Service.BlogService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -13,35 +14,38 @@ import org.springframework.web.bind.annotation.*;
 @CrossOrigin
 public class BlogController {
 
+    private final BlogService blogService;
+
     @Autowired
-    public BlogController() {
+    public BlogController(BlogService blogService) {
+        this.blogService = blogService;
     }
 
 
     @RequestMapping(value = "post", method = RequestMethod.GET)
-    public Response listPost(@RequestParam(value = "page", defaultValue = "0") int page) {
-        return new Response<>(200, "listPost");
+    public Response listPost(@RequestParam(value = "page", defaultValue = "0") int page, @RequestParam(value = "page", defaultValue = "5") int pageSize) {
+        return new Response<>(200, blogService.listPost(page, pageSize));
     }
 
-    @RequestMapping(value = "tag/{tag}", method = RequestMethod.GET)
-    public Response listPostByTag(@RequestParam(value = "page", defaultValue = "0") int page, @PathVariable("tag") String tag) {
-        return new Response<>(200, "listPostByTag");
+    @RequestMapping(value = "category/{category}", method = RequestMethod.GET)
+    public Response listPostByCategory(@RequestParam(value = "page", defaultValue = "0") int page, @RequestParam(value = "pageSize", defaultValue = "5") int pageSize, @PathVariable("category") int categoryId) {
+        return new Response<>(200, blogService.listPostByCategory(page, pageSize, categoryId));
     }
 
-    @RequestMapping(value = "tag", method = RequestMethod.GET)
-    public Response listTag() {
-        return new Response<>(200, "listTag");
+    @RequestMapping(value = "category", method = RequestMethod.GET)
+    public Response listCategory() {
+        return new Response<>(200, blogService.listCategory());
     }
 
     @RequestMapping(value = "post/{post_id}", method = RequestMethod.GET)
     public Response getPostById(@PathVariable("post_id") int postId) {
-        return new Response<>(200, "getBlogById");
+        return new Response<>(200, blogService.getPostById(postId));
     }
 
 
     @RequestMapping(value = "post/{post_id}/comment", method = RequestMethod.GET)
     public Response getCommentByPostId(@PathVariable("post_id") int postId) {
-        return new Response<>(200, "getCommentByPostId");
+        return new Response<>(200, blogService.getCommentByPost(postId));
     }
 
     @RequestMapping(value = "post", method = RequestMethod.POST)

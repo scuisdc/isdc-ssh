@@ -1,5 +1,6 @@
 package Entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 
@@ -36,19 +37,21 @@ public class Post {
     @Column(name = "modified_date")
     private Date lastModified;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, targetEntity = User.class, optional = false)
+    @ManyToOne(fetch = FetchType.LAZY, targetEntity = User.class, optional = false)
     @JoinColumn(name = "user_id")
     private User author;
 
+    @JsonIgnore
     @Column(name = "active")
     private Boolean active;
 
     @Column(name = "preview")
     private String preview;
 
-    @ManyToMany(targetEntity = Tag.class, cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "post")
-    private List<Tag> tags;
+    @ManyToMany(targetEntity = Category.class, cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "post")
+    private List<Category> categories;
 
+    @JsonIgnore
     @OneToMany(targetEntity = Comment.class, cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "post")
     private List<Comment> comments;
 
@@ -109,12 +112,12 @@ public class Post {
         this.active = active;
     }
 
-    public List<Tag> getTags() {
-        return tags;
+    public List<Category> getCategories() {
+        return categories;
     }
 
-    public void setTags(List<Tag> tags) {
-        this.tags = tags;
+    public void setCategories(List<Category> categories) {
+        this.categories = categories;
     }
 
     public List<Comment> getComments() {

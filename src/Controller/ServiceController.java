@@ -1,7 +1,6 @@
 package Controller;
 
 import DTO.CalScoreRequest;
-import DTO.GetScoreResultRequest;
 import DTO.Response;
 import Entity.ScoreRequest;
 import Service.JWCService;
@@ -38,7 +37,7 @@ public class ServiceController {
 
 
     @RequestMapping(value = "jwc/score/result", method = RequestMethod.POST)
-    public Response getScoreResult(@RequestBody GetScoreResultRequest request) {
+    public Response getScoreResult(@RequestBody CalScoreRequest request) {
         ScoreRequest scoreRequest = jwcService.findRequest(request.getZjh(), request.getMm(), request.getDate());
         if (scoreRequest != null) {
             return new Response(200, scoreRequest);
