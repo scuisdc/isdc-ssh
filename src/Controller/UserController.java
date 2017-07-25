@@ -48,8 +48,6 @@ public class UserController {
 
     @RequestMapping(value = "auth", method = RequestMethod.POST)
     public Response login(@RequestBody LoginRequest request, HttpSession session) {
-        System.out.println(session.getAttribute("_code"));
-        System.out.println(request.getCheckCode());
         if (session.getAttribute("_code") != null && session.getAttribute("_code").equals(request.getCheckCode())) {
 
             User user = userService.login(request.getEmail(), request.getPassword());
@@ -62,8 +60,8 @@ public class UserController {
         }
     }
 
-    @RequestMapping(value = "auth/{accessToken}", method = RequestMethod.GET)
-    public Response login(@PathVariable("accessToken") String accessToken) {
+    @RequestMapping(value = "auth", method = RequestMethod.GET)
+    public Response login(@CookieValue("accessToken") String accessToken) {
         User user = userService.auth(accessToken);
         if (user != null) {
             return new Response<>(200, user);

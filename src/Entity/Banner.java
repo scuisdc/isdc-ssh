@@ -24,8 +24,11 @@ public class Banner {
     @Column(name = "detail")
     private String detail;
 
-    @Column(name = "link")
-    private String link;
+    @Column(name = "router_link")
+    private String routerLink;
+
+    @Column(name = "href")
+    private String href;
 
     @Column(name = "action")
     private String action;
@@ -61,14 +64,6 @@ public class Banner {
         this.detail = detail;
     }
 
-    public String getLink() {
-        return link;
-    }
-
-    public void setLink(String link) {
-        this.link = link;
-    }
-
     public String getAction() {
         return action;
     }
@@ -91,5 +86,21 @@ public class Banner {
 
     public void setPiority(Integer piority) {
         this.piority = piority;
+    }
+
+    public String getRouterLink() {
+        return routerLink;
+    }
+
+    public void setRouterLink(String routerLink) {
+        this.routerLink = routerLink;
+    }
+
+    public String getHref() {
+        return href;
+    }
+
+    public void setHref(String href) {
+        this.href = href;
     }
 }

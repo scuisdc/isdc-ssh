@@ -40,8 +40,11 @@ public class Post {
     @JoinColumn(name = "user_id")
     private User author;
 
-    @Column(name = "actived")
-    private Boolean actived;
+    @Column(name = "active")
+    private Boolean active;
+
+    @Column(name = "preview")
+    private String preview;
 
     @ManyToMany(targetEntity = Tag.class, cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "post")
     private List<Tag> tags;
@@ -98,12 +101,12 @@ public class Post {
         this.author = author;
     }
 
-    public Boolean getActived() {
-        return actived;
+    public Boolean getActive() {
+        return active;
     }
 
-    public void setActived(Boolean actived) {
-        this.actived = actived;
+    public void setActive(Boolean active) {
+        this.active = active;
     }
 
     public List<Tag> getTags() {
@@ -120,5 +123,13 @@ public class Post {
 
     public void setComments(List<Comment> comments) {
         this.comments = comments;
+    }
+
+    public String getPreview() {
+        return preview;
+    }
+
+    public void setPreview(String preview) {
+        this.preview = preview;
     }
 }
