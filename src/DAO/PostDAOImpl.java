@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * Copyright (c) 2017 Peter Mao. All rights reserved.
@@ -22,19 +23,15 @@ public class PostDAOImpl implements PostDAO {
     }
 
     @Override
-    public Post getPostById(int postId) {
-        Post o = (Post) sessionFactory.getCurrentSession().createQuery("from Post where id=?").setParameter(0, postId).uniqueResult();
-        if (o != null) {
-            o.getAuthor().setAccessToken(null);
-        }
-        return o;
+    public Map getPostById(int postId) {
+        return (Map) sessionFactory.getCurrentSession().createQuery("select new map(id as id,title as title,createDate as createDate,lastModified as lastModified,preview as preview,author.email as email,author.userName as userName,content as content)from Post where id=?").setParameter(0, postId).uniqueResult();
     }
 
     @Override
-    public List<Post> getAllPost(int page, int pageSize) {
-        List<Post> list = sessionFactory.getCurrentSession().createQuery("from Post ").setFirstResult((page - 1) * pageSize).setMaxResults(pageSize).list();
-        list.forEach(item -> item.getAuthor().setAccessToken(null));
-        return list;
+    public List<Map> getAllPost(int page, int pageSize) {
+//        return (List<Map>) sessionFactory.getCurrentSession().createQuery("select new Map(id as id,title as title,createDate as createDate,lastModified as lastModified,preview as preview,author.email as email,author.userName as userName) from Post order by lastModified desc ").setFirstResult((page - 1) * pageSize).setMaxResults(pageSize).list();
+
+        return (List<Map>) sessionFactory.getCurrentSession().createQuery("select new Map(id as id,title as title,createDate as createDate,lastModified as lastModified,preview as preview,author.email as email,author.userName as userName) from Post order by lastModified desc ").list();
     }
 
     @Override
@@ -50,6 +47,11 @@ public class PostDAOImpl implements PostDAO {
     @Override
     public void updatePost(Post post) {
         sessionFactory.getCurrentSession().update(post);
+    }
+
+    @Override
+    public Post getFullPostById(int postId) {
+        return (Post) sessionFactory.getCurrentSession().createQuery("from Post where id=?").setParameter(0, postId).uniqueResult();
     }
 
 }

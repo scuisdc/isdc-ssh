@@ -14,7 +14,6 @@ import java.util.List;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @Table(name = "blog_category")
 public class Category {
-    @JsonIgnore
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id;
@@ -23,7 +22,7 @@ public class Category {
     private String name;
 
     @JsonIgnore
-    @ManyToMany(targetEntity = Post.class, cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @ManyToMany(fetch = FetchType.LAZY, mappedBy = "categories")
     private List<Post> post;
 
     public Integer getId() {

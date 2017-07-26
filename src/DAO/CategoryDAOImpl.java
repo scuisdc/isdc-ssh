@@ -30,8 +30,4 @@ public class CategoryDAOImpl implements CategoryDAO {
         sessionFactory.getCurrentSession().persist(category);
     }
 
-    @Override
-    public Category getCategoryById(int categoryId) {
-        return (Category) sessionFactory.getCurrentSession().createQuery("from Category where id=?").setParameter(0, categoryId).uniqueResult();
-    }
 }

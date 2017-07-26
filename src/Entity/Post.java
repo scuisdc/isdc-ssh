@@ -1,7 +1,6 @@
 package Entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 
 import javax.persistence.*;
@@ -15,7 +14,6 @@ import java.util.List;
 @Entity
 @Table(name = "blog_post")
 @JsonInclude(JsonInclude.Include.NON_NULL)
-@JsonIgnoreProperties(value = {"accessToken"})
 public class Post {
 
     @Id
@@ -48,13 +46,31 @@ public class Post {
     @Column(name = "preview")
     private String preview;
 
-    @ManyToMany(targetEntity = Category.class, cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "post")
+    @JsonIgnore
+    @ManyToMany(targetEntity = Category.class, cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<Category> categories;
 
     @JsonIgnore
-    @OneToMany(targetEntity = Comment.class, cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "post")
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "post")
     private List<Comment> comments;
 
+
+    public Post(String title, Date createDate, Date lastModified, String preview, List<Category> categories) {
+        this.title = title;
+        this.createDate = createDate;
+        this.lastModified = lastModified;
+//        this.author = new User(user.getUserName(), user.getEmail());
+        this.preview = preview;
+        this.categories = categories;
+
+    }
+
+    public Post() {
+    }
+
+    public Post(String content) {
+        this.content = content;
+    }
 
     public Integer getId() {
         return id;

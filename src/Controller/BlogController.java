@@ -1,7 +1,12 @@
 package Controller;
 
+import DTO.NewCommentRequest;
 import DTO.Response;
+import Entity.Comment;
+import Entity.Post;
+import Entity.User;
 import Service.BlogService;
+import Service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -11,30 +16,21 @@ import org.springframework.web.bind.annotation.*;
  */
 @RestController
 @RequestMapping("blog/")
-@CrossOrigin
 public class BlogController {
 
     private final BlogService blogService;
+    private final UserService userService;
 
     @Autowired
-    public BlogController(BlogService blogService) {
+    public BlogController(BlogService blogService, UserService userService) {
         this.blogService = blogService;
+        this.userService = userService;
     }
 
 
     @RequestMapping(value = "post", method = RequestMethod.GET)
-    public Response listPost(@RequestParam(value = "page", defaultValue = "0") int page, @RequestParam(value = "page", defaultValue = "5") int pageSize) {
+    public Response listPost(@RequestParam(value = "page", defaultValue = "1") int page, @RequestParam(value = "page", defaultValue = "5") int pageSize) {
         return new Response<>(200, blogService.listPost(page, pageSize));
-    }
-
-    @RequestMapping(value = "category/{category}", method = RequestMethod.GET)
-    public Response listPostByCategory(@RequestParam(value = "page", defaultValue = "0") int page, @RequestParam(value = "pageSize", defaultValue = "5") int pageSize, @PathVariable("category") int categoryId) {
-        return new Response<>(200, blogService.listPostByCategory(page, pageSize, categoryId));
-    }
-
-    @RequestMapping(value = "category", method = RequestMethod.GET)
-    public Response listCategory() {
-        return new Response<>(200, blogService.listCategory());
     }
 
     @RequestMapping(value = "post/{post_id}", method = RequestMethod.GET)
@@ -54,8 +50,19 @@ public class BlogController {
     }
 
     @RequestMapping(value = "post/{post_id}/comment", method = RequestMethod.POST)
-    public Response newComment(@CookieValue("accessToken") String accessToken, @PathVariable("post_id") int id) {
-        return new Response<>(200, "new comment");
+    public Response newComment(@CookieValue(value = "accessToken") String accessToken, @PathVariable("post_id") int postId, @RequestBody() NewCommentRequest request) {
+        User user = userService.auth(accessToken);
+        Post post = blogService.getFullPostById(postId);
+        if (user != null && post != null) {
+            Comment comment = new Comment();
+            comment.setSender(user);
+            comment.setCommentDate(request.getCommentDate());
+            comment.setPost(post);
+            comment.setContent(request.getContent());
+            blogService.newComment(comment);
+            return new Response<>(200);
+        }
+        return new Response<>(500, "评论失败");
     }
 
     @RequestMapping(value = "post/{post_id}", method = RequestMethod.DELETE)

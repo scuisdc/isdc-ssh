@@ -14,6 +14,4 @@ public interface CategoryDAO {
 
     void addCategory(Category category);
 
-    Category getCategoryById(int categoryId);
-
 }

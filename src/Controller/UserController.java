@@ -20,7 +20,6 @@ import java.io.IOException;
  */
 @RestController
 @RequestMapping("user/")
-@CrossOrigin
 public class UserController {
     private final UserService userService;
 
@@ -47,7 +46,7 @@ public class UserController {
     }
 
     @RequestMapping(value = "auth", method = RequestMethod.POST)
-    public Response login(@RequestBody LoginRequest request, HttpSession session) {
+    public Response login(@RequestBody LoginRequest request, HttpSession session, HttpServletResponse response) {
         if (session.getAttribute("_code") != null && session.getAttribute("_code").equals(request.getCheckCode())) {
 
             User user = userService.login(request.getEmail(), request.getPassword());
@@ -61,7 +60,7 @@ public class UserController {
     }
 
     @RequestMapping(value = "auth", method = RequestMethod.GET)
-    public Response login(@CookieValue("accessToken") String accessToken) {
+    public Response login(@CookieValue("accessToken") String accessToken, HttpServletResponse response) {
         User user = userService.auth(accessToken);
         if (user != null) {
             return new Response<>(200, user);

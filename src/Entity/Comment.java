@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 
 import javax.persistence.*;
+import java.util.Date;
 
 /**
  * Copyright (c) 2017 Peter Mao. All rights reserved.
@@ -25,7 +26,11 @@ public class Comment {
     @Column(name = "content")
     private String content;
 
-    @ManyToOne(targetEntity = Post.class, cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(name = "comment_date")
+    private Date commentDate;
+
+    @ManyToOne
     @JoinColumn(name = "post_id")
     @JsonIgnore
     private Post post;
@@ -60,5 +65,13 @@ public class Comment {
 
     public void setContent(String content) {
         this.content = content;
+    }
+
+    public Date getCommentDate() {
+        return commentDate;
+    }
+
+    public void setCommentDate(Date commentDate) {
+        this.commentDate = commentDate;
     }
 }
