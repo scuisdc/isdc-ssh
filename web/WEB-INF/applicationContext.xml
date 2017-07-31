@@ -16,10 +16,10 @@
 
     <mvc:default-servlet-handler/>
 
-    <context:component-scan base-package="Controller"/>
-    <context:component-scan base-package="Service"/>
-    <context:component-scan base-package="DAO"/>
-    <context:component-scan base-package="Entity"/>
+    <context:component-scan base-package="controller"/>
+    <context:component-scan base-package="service"/>
+    <context:component-scan base-package="dao"/>
+    <context:component-scan base-package="entity"/>
 
     <context:property-placeholder location="/WEB-INF/hibernate.properties"/>
 
@@ -39,7 +39,7 @@
     <bean id="sessionFactory"
           class="org.springframework.orm.hibernate5.LocalSessionFactoryBean">
         <property name="dataSource" ref="dataSource"/>
-        <property name="packagesToScan" value="Entity"/>
+        <property name="packagesToScan" value="entity"/>
         <property name="hibernateProperties">
             <props>
                 <prop key="hibernate.hbm2ddl.auto">${hibernate.hbm2ddl.auto}</prop>
