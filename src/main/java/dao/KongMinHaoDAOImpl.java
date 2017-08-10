@@ -19,7 +19,7 @@ public class KongMinHaoDAOImpl implements KongMinHaoDAO{
     }
 
     @Override
-    public void increaseAsset(String name,int money) {
+    public void increaseAsset(String name,long money) {
 
 
         Asset A = getAssetByName(name);

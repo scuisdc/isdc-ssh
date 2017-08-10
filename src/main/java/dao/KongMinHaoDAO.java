@@ -8,7 +8,7 @@ import java.util.List;
  */
 public  interface KongMinHaoDAO {
 
-    void increaseAsset(String name,int money);
+    void increaseAsset(String name,long money);
 
 
     Asset getAssetByName(String name);
