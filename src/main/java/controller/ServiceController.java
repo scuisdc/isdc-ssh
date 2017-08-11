@@ -1,5 +1,6 @@
 package controller;
 
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import dto.AssetRequest;
 import dto.CalScoreRequest;
 import dto.Response;
@@ -16,6 +17,7 @@ import service.KongMinHaoServicelmpl;
 
 import java.io.IOException;
 import java.util.Date;
+import java.util.List;
 
 /**
  * Copyright (c) 2017 Peter Mao). All rights reserved.
@@ -64,9 +66,20 @@ public class ServiceController {
         Asset asset = new Asset(request.getName(),request.getMoney());
        Asset assetRequest= kongMinHaoService.getAsset(asset);
         //return new Response<>(200, "获取资产成功");
-        if ( asset != null) {
+        if ( assetRequest != null) {
             return new Response(200, assetRequest);
         }
         return new Response<>(500, "获取资产失败");
+    }
+
+
+    @RequestMapping(value = "/KongMinHao/getRank", method = RequestMethod.POST)
+    public Response getRank() {
+        List<Asset> Rank= this.kongMinHaoService.getRank();
+        //return new Response<>(200, "获取资产成功");
+        if ( Rank != null) {
+            return new Response(200, Rank);
+        }
+        return new Response<>(500, "获取排行榜失败");
     }
     }
