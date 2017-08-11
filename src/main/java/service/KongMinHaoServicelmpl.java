@@ -1,15 +1,11 @@
 package service;
 
-import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import dao.KongMinHaoDAO;
-import dao.KongMinHaoDAOImpl;
 import entity.Asset;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.stereotype.Service;
-import utils.ComparatorAsset;
+
 import javax.transaction.Transactional;
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -35,7 +31,7 @@ public class KongMinHaoServicelmpl implements KongMinHaoService{
 
     @Override
     public List<Asset> getRank() {
-        ComparatorAsset comparatorAsset = new ComparatorAsset();
+
         List<Asset> Rank = kongMinHaoDAO.getAllAsset();
         return Rank;
     }
