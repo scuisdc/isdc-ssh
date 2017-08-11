@@ -54,7 +54,7 @@ public class KongMinHaoDAOImpl implements KongMinHaoDAO{
 
     @Override
     public List<Asset> getAllAsset() {
-        String hql = "from Asset ";
+        String hql = "from Asset order by money desc";
         Query query = sessionFactory.getCurrentSession().createQuery(hql);
         return query.list();
     }
