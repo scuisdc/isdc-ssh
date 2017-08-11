@@ -26,12 +26,12 @@ public class Asset {
     private String name;
 
     @Column(name = "money")
-    private Integer money;
+    private long money;
 
 
     public Asset() {
     }
-    public Asset(String name,int money) {
+    public Asset(String name,long money) {
         this.name = name;
         this.money=money;
     }
@@ -43,9 +43,9 @@ public class Asset {
     public void setName(String name) {
         this.name = name;
     }
-    public void setMoney(Integer money) {
+    public void setMoney(long money) {
         this.money = money;
     }
     public String getName(){return name;};
-    public Integer getMoney(){return money;}
+    public long getMoney(){return money;}
 }
