@@ -28,10 +28,11 @@ import java.util.List;
 public class ServiceController {
     private final JWCService jwcService;
     private final KongMinHaoService kongMinHaoService;
+
     @Autowired
-    public ServiceController(JWCService jwcService,KongMinHaoService kongMinHaoService ) {
+    public ServiceController(JWCService jwcService, KongMinHaoService kongMinHaoService) {
         this.jwcService = jwcService;
-        this.kongMinHaoService=kongMinHaoService;
+        this.kongMinHaoService = kongMinHaoService;
     }
 
     @RequestMapping(value = "jwc/score", method = RequestMethod.POST)
@@ -53,20 +54,21 @@ public class ServiceController {
         }
         return new Response<>(500, "查询失败");
     }
+
     @RequestMapping(value = "/KongMinHao/increase", method = RequestMethod.POST)
     public Response increaseAssets(@RequestBody AssetRequest request) {
         //ScoreRequest scoreRequest = jwcService.findRequest(request.getZjh(), request.getMm(), request.getDate());
-        Asset asset = new Asset(request.getName(),request.getMoney());
+        Asset asset = new Asset(request.getName(), request.getMoney());
         kongMinHaoService.increaseAsset(asset);
         return new Response<>(200, "添加资产成功");
     }
+
     @RequestMapping(value = "/KongMinHao/getAsset", method = RequestMethod.POST)
     public Response getAssets(@RequestBody AssetRequest request) {
-        //ScoreRequest scoreRequest = jwcService.findRequest(request.getZjh(), request.getMm(), request.getDate());
-        Asset asset = new Asset(request.getName(),request.getMoney());
-       Asset assetRequest= kongMinHaoService.getAsset(asset);
-        //return new Response<>(200, "获取资产成功");
-        if ( assetRequest != null) {
+        Asset asset = new Asset(request.getName(), request.getMoney());
+        Asset assetRequest = kongMinHaoService.getAsset(asset);
+
+        if (assetRequest != null) {
             return new Response(200, assetRequest);
         }
         return new Response<>(500, "获取资产失败");
@@ -75,11 +77,11 @@ public class ServiceController {
 
     @RequestMapping(value = "/KongMinHao/getRank", method = RequestMethod.POST)
     public Response getRank() {
-        List<Asset> Rank= this.kongMinHaoService.getRank();
-        //return new Response<>(200, "获取资产成功");
-        if ( Rank != null) {
+        List<Asset> Rank = this.kongMinHaoService.getRank();
+
+        if (Rank != null) {
             return new Response(200, Rank);
         }
         return new Response<>(500, "获取排行榜失败");
     }
-    }
+}

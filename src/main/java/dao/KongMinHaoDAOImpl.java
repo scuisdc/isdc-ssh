@@ -1,14 +1,13 @@
 package dao;
 
-import com.fasterxml.jackson.annotation.JsonTypeInfo;
-import controller.ServiceController;
+
 import entity.Asset;
 import org.hibernate.SessionFactory;
-import org.hibernate.internal.SessionFactoryImpl;
+
 import org.hibernate.query.Query;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
+
 
 import java.util.List;
 
@@ -27,10 +26,9 @@ public class KongMinHaoDAOImpl implements KongMinHaoDAO{
 
 
         Asset A = getAssetByName(name);
-        A.setMoney(A.getMoney()+100);
-        //String hql = "update Asset  set money=200 where name=\"KongMinHao\""
+        A.setMoney(A.getMoney()+money);
         this.sessionFactory.getCurrentSession().update(A);
-        ///*.setParameter(0,A.getMoney()+money)*/.setParameter(0,A.getName());
+
     }
 
     @Override
@@ -41,7 +39,7 @@ public class KongMinHaoDAOImpl implements KongMinHaoDAO{
             return result;
         }
         else{
-            result = new Asset(name,100);
+            result = new Asset(name,0L);
             addAsset(result);
             return result;
         }
@@ -54,8 +52,9 @@ public class KongMinHaoDAOImpl implements KongMinHaoDAO{
 
     @Override
     public List<Asset> getAllAsset() {
-        String hql = "from Asset order by money desc";
+        String hql = "from Asset order by money desc ";
         Query query = sessionFactory.getCurrentSession().createQuery(hql);
+        query.setMaxResults(10);
         return query.list();
     }
 }

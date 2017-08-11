@@ -21,7 +21,7 @@ public class KongMinHaoServicelmpl implements KongMinHaoService{
     }
     @Override
     public void increaseAsset(Asset asset) {
-        kongMinHaoDAO.increaseAsset(asset.getName(),0L);
+        kongMinHaoDAO.increaseAsset(asset.getName(),100L);
     }
 
     @Override
@@ -31,7 +31,6 @@ public class KongMinHaoServicelmpl implements KongMinHaoService{
 
     @Override
     public List<Asset> getRank() {
-
         List<Asset> Rank = kongMinHaoDAO.getAllAsset();
         return Rank;
     }
