@@ -27,7 +27,7 @@ import java.security.MessageDigest;
 @RequestMapping("/github")
 public class HookController {
 
-    @Value("${github.webHookSecret}")
+    @Value("${github.webHookSecret:default}")
     private String webHookSecret;
 
     @RequestMapping("/ssh/push")
