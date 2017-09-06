@@ -34,6 +34,8 @@
         <property name="minPoolSize" value="1"/>
         <property name="initialPoolSize" value="1"/>
         <property name="maxIdleTime" value="20"/>
+        <property name="maxStatements" value="0"/>
+        <property name="checkoutTimeout" value="100"/>
     </bean>
 
     <bean id="sessionFactory"
@@ -55,7 +57,7 @@
 
     </bean>
 
-    <tx:annotation-driven transaction-manager="transactionManager"/>
+    <tx:annotation-driven/>
 
     <bean id="transactionProxy"
           class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean"
