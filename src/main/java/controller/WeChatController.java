@@ -41,7 +41,7 @@ public class WeChatController {
             t.setDescription("欢迎你的加入！");
             t.setPicurl("http://7xq5uu.com1.z0.glb.clouddn.com/images_want.jpg");
             t.setTitle("ISDC招新报名表");
-            t.setUrl("https://scuisdc.org/api/wechat/join/" + eventMessage.getFromUserName());
+            t.setUrl("https://scuisdc.org/api/join/" + eventMessage.getFromUserName());
             XMLNewsMessage xmlNewsMessage = new XMLNewsMessage(
                     eventMessage.getFromUserName(),
                     eventMessage.getToUserName(),
