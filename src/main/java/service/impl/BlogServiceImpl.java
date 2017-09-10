@@ -1,4 +1,4 @@
-package service;
+package service.impl;
 
 import dao.CommentDAO;
 import dao.PostDAO;
@@ -6,6 +6,7 @@ import entity.Comment;
 import entity.Post;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import service.BlogService;
 
 import javax.transaction.Transactional;
 import java.util.List;
