@@ -26,7 +26,11 @@
     <context:property-placeholder location="/WEB-INF/hibernate.properties,/WEB-INF/weixin.properties"/>
     <task:scheduler id="taskScheduler"/>
     <task:annotation-driven executor="taskExecutor" scheduler="taskScheduler"/>
-
+    <bean id="viewResolver"
+          class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+        <property name="prefix" value="/"/>
+        <property name="suffix" value=".jsp"/>
+    </bean>
     <bean id="dataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource"
           destroy-method="close">
         <property name="driverClass" value="${jdbc.driverClassName}"/>

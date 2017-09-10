@@ -1,0 +1,44 @@
+package dao.impl;
+
+import dao.ApplicationFormDAO;
+import entity.Announce;
+import entity.ApplicationForm;
+import org.hibernate.SessionFactory;
+import org.hibernate.query.Query;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
+
+import java.util.List;
+import java.util.Optional;
+
+/**
+ * Copyright (c) 2017 Peter Mao. All rights reserved.
+ * Created by mao on 17-7-21.
+ */
+@Repository
+public class ApplicationFormDAOImpl implements ApplicationFormDAO {
+    private final SessionFactory sessionFactory;
+
+    @Autowired
+    public ApplicationFormDAOImpl(SessionFactory sessionFactory) {
+        this.sessionFactory = sessionFactory;
+    }
+
+
+    @Override
+    public List<Announce> getAllForms() {
+        String hql = "from ApplicationForm order by createDate desc";
+        Query query = sessionFactory.getCurrentSession().createQuery(hql);
+        return query.list();
+    }
+
+    @Override
+    public void addForm(ApplicationForm form) {
+        sessionFactory.getCurrentSession().persist(form);
+    }
+
+    @Override
+    public Optional<ApplicationForm> queryByOpenid(String openid) {
+        return sessionFactory.getCurrentSession().createQuery("from ApplicationForm where openid=?").setParameter(0, openid).uniqueResultOptional();
+    }
+}

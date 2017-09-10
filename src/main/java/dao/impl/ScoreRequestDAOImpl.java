@@ -1,5 +1,6 @@
-package dao;
+package dao.impl;
 
+import dao.ScoreRequestDAO;
 import entity.ScoreRequest;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
