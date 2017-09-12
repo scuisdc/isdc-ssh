@@ -34,18 +34,20 @@ public class JoinController {
 
     @PostMapping
     public String submit(@PathVariable String openid, @RequestParam("name") String name, @RequestParam("stuId") Long stuId, @RequestParam("gender") String gender, @RequestParam("nationality") String nationality, @RequestParam("tel") Long tel, @RequestParam("email") String email, @RequestParam("introduce") String introduce, @RequestParam("description") String description) {
-        ApplicationForm applicationForm = new ApplicationForm();
-        applicationForm.setOpenid(openid);
-        applicationForm.setDescription(description);
-        applicationForm.setName(name);
-        applicationForm.setIntroduce(introduce);
-        applicationForm.setTel(tel);
-        applicationForm.setEmail(email);
-        applicationForm.setCreateDate(new Date());
-        applicationForm.setStuId(stuId);
-        applicationForm.setGender(gender);
-        applicationForm.setNationality(nationality);
-        joinService.submit(applicationForm);
+        if (!joinService.submitted(openid)) {
+            ApplicationForm applicationForm = new ApplicationForm();
+            applicationForm.setOpenid(openid);
+            applicationForm.setDescription(description);
+            applicationForm.setName(name);
+            applicationForm.setIntroduce(introduce);
+            applicationForm.setTel(tel);
+            applicationForm.setEmail(email);
+            applicationForm.setCreateDate(new Date());
+            applicationForm.setStuId(stuId);
+            applicationForm.setGender(gender);
+            applicationForm.setNationality(nationality);
+            joinService.submit(applicationForm);
+        }
         return "success";
     }
 }

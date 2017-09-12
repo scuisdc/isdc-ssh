@@ -52,6 +52,10 @@ public class ApplicationForm {
     @Column(name = "gender")
     private String gender;
 
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(name = "interview")
+    private Date interview;
+
     public String getNationality() {
         return nationality;
     }
@@ -138,5 +142,13 @@ public class ApplicationForm {
 
     public void setCreateDate(Date createDate) {
         this.createDate = createDate;
+    }
+
+    public Date getInterview() {
+        return interview;
+    }
+
+    public void setInterview(Date interview) {
+        this.interview = interview;
     }
 }
