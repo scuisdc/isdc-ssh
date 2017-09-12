@@ -50,9 +50,9 @@ public class WeChatController {
 //            return xmlNewsMessage.toXML();
             return new XMLTextMessage(eventMessage.getFromUserName(), eventMessage.getToUserName(), "报名接口正在维护中！请稍后再试").toXML();
         } else if (eventMessage.getContent().contains("面试")) {
-            return new XMLTextMessage(eventMessage.getFromUserName(), eventMessage.getToUserName(), "").toXML();
+            return new XMLTextMessage(eventMessage.getFromUserName(), eventMessage.getToUserName(), "正在安排您的面试时间，请耐心等待！").toXML();
         }
-        return new XMLTextMessage(eventMessage.getFromUserName(), eventMessage.getToUserName(), "非常感谢您关注isdc公众订阅号“进退之间”。。社团官网：https://www.scuisdc.org ，社团微博：http://weibo.com/scuisdc。同时您可以直接输入任何意见、建议或者问题，我们将会在一天之内给您回复！再次感谢您的关注！回复【报名】开始填写报名表！报名成功后回复【面试】获取后续面试安排").toXML();
+        return new XMLTextMessage(eventMessage.getFromUserName(), eventMessage.getToUserName(), "我们已经收到了您的消息，将会在24小时内作出回复。回复【报名】开始填写报名表，报名成功后回复【面试】获取后续面试安排").toXML();
     }
 
     @RequestMapping("token")
