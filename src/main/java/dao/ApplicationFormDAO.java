@@ -15,5 +15,7 @@ public interface ApplicationFormDAO {
 
     void addForm(ApplicationForm form);
 
+    void updateForm(ApplicationForm form);
+
     Optional<ApplicationForm> queryByOpenid(String openid);
 }

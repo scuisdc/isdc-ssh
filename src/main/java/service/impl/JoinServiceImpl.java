@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import service.JoinService;
 
 import javax.transaction.Transactional;
+import java.util.Optional;
 
 /**
  * Copyright (c) 2017 Peter Mao. All rights reserved.
@@ -24,11 +25,11 @@ public class JoinServiceImpl implements JoinService {
 
     @Override
     public void submit(ApplicationForm applicationForm) {
-        applicationFormDAO.addForm(applicationForm);
+        applicationFormDAO.updateForm(applicationForm);
     }
 
     @Override
-    public boolean submitted(String openid) {
-        return applicationFormDAO.queryByOpenid(openid).isPresent();
+    public Optional<ApplicationForm> queryForm(String openid) {
+        return applicationFormDAO.queryByOpenid(openid);
     }
 }

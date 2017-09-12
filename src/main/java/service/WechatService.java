@@ -7,4 +7,6 @@ package service;
 public interface WechatService {
 
     boolean checkSignature(String timestamp, String nonce, String signature);
+
+    void saveOpenid(String openid);
 }

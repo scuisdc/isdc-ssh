@@ -38,6 +38,11 @@ public class ApplicationFormDAOImpl implements ApplicationFormDAO {
     }
 
     @Override
+    public void updateForm(ApplicationForm form) {
+        sessionFactory.getCurrentSession().update(form);
+    }
+
+    @Override
     public Optional<ApplicationForm> queryByOpenid(String openid) {
         return sessionFactory.getCurrentSession().createQuery("from ApplicationForm where openid=?").setParameter(0, openid).uniqueResultOptional();
     }

@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.*;
 import service.JoinService;
 
 import java.util.Date;
+import java.util.Optional;
 
 /**
  * Copyright (c) 2017 Peter Mao. All rights reserved.
@@ -26,7 +27,8 @@ public class JoinController {
 
     @GetMapping
     public String join(@PathVariable String openid) {
-        if (joinService.submitted(openid)) {
+        Optional<ApplicationForm> applicationForm = joinService.queryForm(openid);
+        if (applicationForm.isPresent() && applicationForm.get().getName() != null) {
             return "success";
         }
         return "index";
@@ -34,8 +36,9 @@ public class JoinController {
 
     @PostMapping
     public String submit(@PathVariable String openid, @RequestParam("name") String name, @RequestParam("stuId") Long stuId, @RequestParam("gender") String gender, @RequestParam("nationality") String nationality, @RequestParam("tel") Long tel, @RequestParam("email") String email, @RequestParam("introduce") String introduce, @RequestParam("description") String description) {
-        if (!joinService.submitted(openid)) {
-            ApplicationForm applicationForm = new ApplicationForm();
+        Optional<ApplicationForm> optional = joinService.queryForm(openid);
+        if (optional.isPresent() && optional.get().getName() == null) {
+            ApplicationForm applicationForm = optional.get();
             applicationForm.setOpenid(openid);
             applicationForm.setDescription(description);
             applicationForm.setName(name);
