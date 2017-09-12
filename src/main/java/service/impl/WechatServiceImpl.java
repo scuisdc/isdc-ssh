@@ -35,8 +35,10 @@ public class WechatServiceImpl implements WechatService {
 
     @Override
     public void saveOpenid(String openid) {
-        ApplicationForm applicationForm = new ApplicationForm();
-        applicationForm.setOpenid(openid);
-        applicationFormDAO.addForm(applicationForm);
+        if (!applicationFormDAO.queryByOpenid(openid).isPresent()) {
+            ApplicationForm applicationForm = new ApplicationForm();
+            applicationForm.setOpenid(openid);
+            applicationFormDAO.addForm(applicationForm);
+        }
     }
 }
