@@ -1,8 +1,8 @@
 package dao;
 
-import entity.Announce;
 import entity.ApplicationForm;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -11,11 +11,15 @@ import java.util.Optional;
  * Created by mao on 17-9-10.
  */
 public interface ApplicationFormDAO {
-    List<Announce> getAllForms();
+    List<ApplicationForm> getAllForms();
 
     void addForm(ApplicationForm form);
 
     void updateForm(ApplicationForm form);
 
     Optional<ApplicationForm> queryByOpenid(String openid);
+
+    Date getLatestDate();
+
+    long queryConcurrentDateCount(Date latestDate);
 }

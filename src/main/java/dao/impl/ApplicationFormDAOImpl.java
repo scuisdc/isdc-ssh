@@ -1,13 +1,13 @@
 package dao.impl;
 
 import dao.ApplicationFormDAO;
-import entity.Announce;
 import entity.ApplicationForm;
 import org.hibernate.SessionFactory;
 import org.hibernate.query.Query;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -26,7 +26,7 @@ public class ApplicationFormDAOImpl implements ApplicationFormDAO {
 
 
     @Override
-    public List<Announce> getAllForms() {
+    public List<ApplicationForm> getAllForms() {
         String hql = "from ApplicationForm order by createDate desc";
         Query query = sessionFactory.getCurrentSession().createQuery(hql);
         return query.list();
@@ -45,5 +45,15 @@ public class ApplicationFormDAOImpl implements ApplicationFormDAO {
     @Override
     public Optional<ApplicationForm> queryByOpenid(String openid) {
         return sessionFactory.getCurrentSession().createQuery("from ApplicationForm where openid=?").setParameter(0, openid).uniqueResultOptional();
+    }
+
+    @Override
+    public Date getLatestDate() {
+        return (Date) sessionFactory.getCurrentSession().createQuery("select max(interview) from ApplicationForm").uniqueResultOptional().orElseGet(() -> new Date(1505523600000L));
+    }
+
+    @Override
+    public long queryConcurrentDateCount(Date latestDate) {
+        return (long) sessionFactory.getCurrentSession().createQuery("select count(*) from ApplicationForm where interview=?").setParameter(0, latestDate).uniqueResult();
     }
 }

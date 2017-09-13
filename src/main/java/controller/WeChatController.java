@@ -6,13 +6,16 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import service.JoinService;
 import service.WechatService;
 import weixin.popular.bean.message.EventMessage;
 import weixin.popular.bean.xmlmessage.XMLNewsMessage;
 import weixin.popular.bean.xmlmessage.XMLTextMessage;
 import weixin.popular.util.XMLConverUtil;
 
+import java.text.SimpleDateFormat;
 import java.util.Collections;
+import java.util.Date;
 
 /**
  * Copyright (c) 2017 Peter Mao). All rights reserved.
@@ -22,10 +25,12 @@ import java.util.Collections;
 @RequestMapping("wechat/")
 public class WeChatController {
     private final WechatService wechatService;
+    private final JoinService joinService;
 
     @Autowired
-    public WeChatController(WechatService wechatService) {
+    public WeChatController(WechatService wechatService, JoinService joinService) {
         this.wechatService = wechatService;
+        this.joinService = joinService;
     }
 
     @RequestMapping("notify")
@@ -53,7 +58,8 @@ public class WeChatController {
                                     t));
                     return xmlNewsMessage.toXML();
                 } else if (eventMessage.getContent().contains("面试")) {
-                    return new XMLTextMessage(eventMessage.getFromUserName(), eventMessage.getToUserName(), "正在安排您的面试时间，请耐心等待！").toXML();
+                    Date date = joinService.generateInterviewDate(eventMessage.getFromUserName(), false);
+                    return new XMLTextMessage(eventMessage.getFromUserName(), eventMessage.getToUserName(), date == null ? "查询不到您的面试安排，请稍后再试！" : String.format("您的面试时间是：%s，面试地点为二基楼B座405教室，请准时到场！时间安排如有冲突请私戳管理员", new SimpleDateFormat("yyyy-MM-dd HH:mm").format(date))).toXML();
                 }
                 return new XMLTextMessage(eventMessage.getFromUserName(), eventMessage.getToUserName(), "我们已经收到了您的消息，将会在24小时内作出回复。回复【报名】开始填写报名表，报名成功后回复【面试】获取后续面试安排").toXML();
             }
