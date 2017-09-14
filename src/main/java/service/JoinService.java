@@ -3,6 +3,7 @@ package service;
 import entity.ApplicationForm;
 
 import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -15,4 +16,6 @@ public interface JoinService {
     Optional<ApplicationForm> queryForm(String openid);
 
     Date generateInterviewDate(String openid, boolean force);
+
+    List<ApplicationForm> queryAll();
 }

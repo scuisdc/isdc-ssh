@@ -8,6 +8,7 @@ import service.JoinService;
 
 import javax.transaction.Transactional;
 import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -57,5 +58,10 @@ public class JoinServiceImpl implements JoinService {
             return form.getInterview();
         }
         return null;
+    }
+
+    @Override
+    public List<ApplicationForm> queryAll() {
+        return applicationFormDAO.getAllForms();
     }
 }

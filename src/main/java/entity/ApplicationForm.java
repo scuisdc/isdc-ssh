@@ -1,8 +1,5 @@
 package entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonInclude;
-
 import javax.persistence.*;
 import java.util.Date;
 
@@ -11,10 +8,8 @@ import java.util.Date;
  * Created by mao on 17-9-9.
  */
 @Entity
-@JsonInclude(JsonInclude.Include.NON_NULL)
 @Table(name = "application_form")
 public class ApplicationForm {
-    @JsonIgnore
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id;
@@ -55,6 +50,79 @@ public class ApplicationForm {
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "interview")
     private Date interview;
+
+    @Lob
+    @Column(name = "judge")
+    private String judge;
+
+    @Column(name = "block", columnDefinition = "boolean default false", nullable = false)
+    private Boolean block;
+
+    @Column(name = "pass", columnDefinition = "boolean default false", nullable = false)
+    private Boolean pass;
+
+    @Column(name = "reason")
+    private String reason;
+
+    @Column(name = "impression_score")
+    private Double impressionScore;
+
+    @Column(name = "tech_score")
+    private Double techScore;
+
+    @Column(name = "integrated_score")
+    private Double integratedScore;
+
+    @Column(name = "interviewer")
+    private String interviewer;
+
+    public Boolean getBlock() {
+        return block;
+    }
+
+    public void setBlock(Boolean block) {
+        this.block = block;
+    }
+
+    public Boolean getPass() {
+        return pass;
+    }
+
+    public void setPass(Boolean pass) {
+        this.pass = pass;
+    }
+
+    public String getReason() {
+        return reason;
+    }
+
+    public void setReason(String reason) {
+        this.reason = reason;
+    }
+
+    public Double getImpressionScore() {
+        return impressionScore;
+    }
+
+    public void setImpressionScore(Double impressionScore) {
+        this.impressionScore = impressionScore;
+    }
+
+    public Double getTechScore() {
+        return techScore;
+    }
+
+    public void setTechScore(Double techScore) {
+        this.techScore = techScore;
+    }
+
+    public Double getIntegratedScore() {
+        return integratedScore;
+    }
+
+    public void setIntegratedScore(Double integratedScore) {
+        this.integratedScore = integratedScore;
+    }
 
     public String getNationality() {
         return nationality;
@@ -150,5 +218,21 @@ public class ApplicationForm {
 
     public void setInterview(Date interview) {
         this.interview = interview;
+    }
+
+    public String getInterviewer() {
+        return interviewer;
+    }
+
+    public void setInterviewer(String interviewer) {
+        this.interviewer = interviewer;
+    }
+
+    public String getJudge() {
+        return judge;
+    }
+
+    public void setJudge(String judge) {
+        this.judge = judge;
     }
 }

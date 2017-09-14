@@ -27,7 +27,7 @@ public class ApplicationFormDAOImpl implements ApplicationFormDAO {
 
     @Override
     public List<ApplicationForm> getAllForms() {
-        String hql = "from ApplicationForm order by createDate desc";
+        String hql = "from ApplicationForm where interview is not null order by interview";
         Query query = sessionFactory.getCurrentSession().createQuery(hql);
         return query.list();
     }

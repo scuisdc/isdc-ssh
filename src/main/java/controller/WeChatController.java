@@ -1,12 +1,13 @@
 package controller;
 
+import dto.Response;
+import entity.ApplicationForm;
+import entity.User;
 import job.AccessTokenJob;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import service.JoinService;
+import service.UserService;
 import service.WechatService;
 import weixin.popular.bean.message.EventMessage;
 import weixin.popular.bean.xmlmessage.XMLNewsMessage;
@@ -16,6 +17,7 @@ import weixin.popular.util.XMLConverUtil;
 import java.text.SimpleDateFormat;
 import java.util.Collections;
 import java.util.Date;
+import java.util.List;
 
 /**
  * Copyright (c) 2017 Peter Mao). All rights reserved.
@@ -26,11 +28,13 @@ import java.util.Date;
 public class WeChatController {
     private final WechatService wechatService;
     private final JoinService joinService;
+    private final UserService userService;
 
     @Autowired
-    public WeChatController(WechatService wechatService, JoinService joinService) {
+    public WeChatController(WechatService wechatService, JoinService joinService, UserService userService) {
         this.wechatService = wechatService;
         this.joinService = joinService;
+        this.userService = userService;
     }
 
     @RequestMapping("notify")
@@ -70,5 +74,27 @@ public class WeChatController {
     @RequestMapping("token")
     public String getToken() {
         return AccessTokenJob.access_token;
+    }
+
+    @GetMapping("form")
+    public Response<List<ApplicationForm>> listAllForms(@CookieValue(value = "accessToken") String accessToken) {
+        User user = userService.auth(accessToken);
+        if (user != null && user.getRoot()) {
+            return new Response<>(200, joinService.queryAll());
+        } else {
+            return new Response<>(403);
+        }
+    }
+
+    @PutMapping("form")
+    public Response<Void> updateForm(@CookieValue(value = "accessToken") String accessToken, @RequestBody ApplicationForm form) {
+        User user = userService.auth(accessToken);
+        if (user != null && user.getRoot()) {
+            form.setInterviewer(user.getUserName());
+            joinService.submit(form);
+            return new Response<>(200);
+        } else {
+            return new Response<>(403);
+        }
     }
 }
