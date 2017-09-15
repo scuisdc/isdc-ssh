@@ -1,9 +1,10 @@
-package service;
+package service.impl;
 
 import dao.BannerDAO;
 import entity.Banner;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import service.BannerService;
 
 import javax.transaction.Transactional;
 import java.util.List;

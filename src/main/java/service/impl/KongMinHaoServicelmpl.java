@@ -1,9 +1,10 @@
-package service;
+package service.impl;
 
 import dao.KongMinHaoDAO;
 import entity.Asset;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import service.KongMinHaoService;
 
 import javax.transaction.Transactional;
 import java.util.List;
@@ -13,7 +14,7 @@ import java.util.List;
  */
 @Service("KongMinHaoservice")
 @Transactional
-public class KongMinHaoServicelmpl implements KongMinHaoService{
+public class KongMinHaoServicelmpl implements KongMinHaoService {
     final KongMinHaoDAO kongMinHaoDAO;
     @Autowired
     public KongMinHaoServicelmpl(KongMinHaoDAO kongMinHaoDAO) {

@@ -1,18 +1,17 @@
-package dao;
+package dao.impl;
 
 
+import dao.KongMinHaoDAO;
 import entity.Asset;
 import org.hibernate.SessionFactory;
-
 import org.hibernate.query.Query;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
-
 import java.util.List;
 
 @Repository
-public class KongMinHaoDAOImpl implements KongMinHaoDAO{
+public class KongMinHaoDAOImpl implements KongMinHaoDAO {
 
     private final SessionFactory sessionFactory;
 

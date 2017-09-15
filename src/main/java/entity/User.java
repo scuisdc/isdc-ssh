@@ -38,6 +38,10 @@ public class User {
     @Column(name = "enabled")
     private Boolean enabled;
 
+    @JsonIgnore
+    @Column(name = "is_root", columnDefinition = "boolean default false", nullable = false)
+    private Boolean isRoot;
+
 
     @Column(name = "access_token", unique = true, length = 16)
     private String accessToken;
@@ -100,5 +104,13 @@ public class User {
 
     public void generateToken() {
         setAccessToken(RandomStringUtils.randomAlphanumeric(16));
+    }
+
+    public Boolean getRoot() {
+        return isRoot;
+    }
+
+    public void setRoot(Boolean root) {
+        isRoot = root;
     }
 }
