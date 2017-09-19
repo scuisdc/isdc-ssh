@@ -2,7 +2,9 @@ package dao.impl;
 
 import dao.PostDAO;
 import entity.Post;
+import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.Transaction;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -31,7 +33,6 @@ public class PostDAOImpl implements PostDAO {
     @Override
     public List<Map> getAllPost(int page, int pageSize) {
 //        return (List<Map>) sessionFactory.getCurrentSession().createQuery("select new Map(id as id,title as title,createDate as createDate,lastModified as lastModified,preview as preview,author.email as email,author.userName as userName) from Post order by lastModified desc ").setFirstResult((page - 1) * pageSize).setMaxResults(pageSize).list();
-
         return (List<Map>) sessionFactory.getCurrentSession().createQuery("select new Map(id as id,title as title,createDate as createDate,lastModified as lastModified,preview as preview,author.email as email,author.userName as userName) from Post order by lastModified desc ").list();
     }
 
@@ -42,7 +43,15 @@ public class PostDAOImpl implements PostDAO {
 
     @Override
     public boolean delPost(int postId) {
-        return sessionFactory.getCurrentSession().createQuery("delete from Post where id=?").setParameter(0, postId).executeUpdate() == 1;
+        Session curSession = sessionFactory.getCurrentSession();
+//        Transaction delPostTx = curSession.beginTransaction();
+        curSession.createQuery("delete from Comment where post.id=?").setParameter(0, postId).executeUpdate();
+        List existCommentList = curSession.createQuery("from Comment where post.id=?").setParameter(0, postId).list();
+        boolean delCommentResult = existCommentList.size() == 0;
+        boolean delPostResult = curSession.createQuery("delete from Post where id=?").setParameter(0, postId).executeUpdate() == 1;
+//        delPostTx.commit();
+        System.out.println("delComment=" + delCommentResult + " delPost=" + delPostResult);
+        return delCommentResult && delPostResult;
     }
 
     @Override
@@ -55,4 +64,13 @@ public class PostDAOImpl implements PostDAO {
         return (Post) sessionFactory.getCurrentSession().createQuery("from Post where id=?").setParameter(0, postId).uniqueResult();
     }
 
+    @Override
+    public List<Map> getPostByUserAccessToken(String accessToken) {
+        return (List<Map>) sessionFactory.getCurrentSession().createQuery("select new Map(id as id,title as title,createDate as createDate,lastModified as lastModified,preview as preview,author.email as email,author.userName as userName) from Post where author.accessToken=? order by lastModified desc ").setParameter(0, accessToken).list();
+    }
+
+    @Override
+    public List<Map> getPostByUserName(String userName) {
+        return (List<Map>) sessionFactory.getCurrentSession().createQuery("select new Map(id as id,title as title,createDate as createDate,lastModified as lastModified,preview as preview,author.email as email,author.userName as userName) from Post where author.userName=? order by lastModified desc ").setParameter(0, userName).list();
+    }
 }
