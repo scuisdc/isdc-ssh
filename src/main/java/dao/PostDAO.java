@@ -22,7 +22,7 @@ public interface PostDAO {
 
     Post getFullPostById(int postId);
 
-    public List<Map> getPostByUserAccessToken(String accessToken);
+    List<Map> getPostByUserAccessToken(String accessToken);
 
-    public List<Map> getPostByUserName(String userName);
+    List<Map> getPostByUserName(String userName);
 }

@@ -13,28 +13,28 @@ public class UpdatePostRequest {
         return id;
     }
 
-    public String getTitle() {
-        return title;
-    }
-
-    public String getPreview() {
-        return preview;
-    }
-
-    public String getContent() {
-        return content;
-    }
-
     public void setId(Integer id) {
         this.id = id;
+    }
+
+    public String getTitle() {
+        return title;
     }
 
     public void setTitle(String title) {
         this.title = title;
     }
 
+    public String getPreview() {
+        return preview;
+    }
+
     public void setPreview(String preview) {
         this.preview = preview;
+    }
+
+    public String getContent() {
+        return content;
     }
 
     public void setContent(String content) {
