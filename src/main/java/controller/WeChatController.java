@@ -10,13 +10,9 @@ import service.JoinService;
 import service.UserService;
 import service.WechatService;
 import weixin.popular.bean.message.EventMessage;
-import weixin.popular.bean.xmlmessage.XMLNewsMessage;
 import weixin.popular.bean.xmlmessage.XMLTextMessage;
 import weixin.popular.util.XMLConverUtil;
 
-import java.text.SimpleDateFormat;
-import java.util.Collections;
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -45,31 +41,17 @@ public class WeChatController {
             if (data != null) {
                 EventMessage eventMessage = XMLConverUtil.convertToObject(EventMessage.class, data);
                 if (eventMessage.getEvent() != null && eventMessage.getEvent().equals("subscribe")) {
-                    return new XMLTextMessage(eventMessage.getFromUserName(), eventMessage.getToUserName(), "非常感谢您关注isdc公众订阅号“进退之间”。。社团官网：https://www.scuisdc.org ，社团微博：http://weibo.com/scuisdc。同时您可以直接输入任何意见、建议或者问题，我们将会在一天之内给您回复！再次感谢您的关注！回复【报名】开始填写报名表！报名成功后回复【面试】获取后续面试安排").toXML();
+                    return new XMLTextMessage(eventMessage.getFromUserName(), eventMessage.getToUserName(), "非常感谢您关注isdc公众订阅号“进退之间”。。社团官网：https://www.scuisdc.org ，社团微博：http://weibo.com/scuisdc。同时您可以直接输入任何意见、建议或者问题，我们将会在一天之内给您回复！再次感谢您的关注！回复【面试】获取面试结果").toXML();
                 }
                 if (eventMessage.getContent().contains("报名")) {
-                    if (System.currentTimeMillis() <= 1505491200000L) {
-                        String openid = eventMessage.getFromUserName();
-                        wechatService.saveOpenid(openid);
-                        XMLNewsMessage.Article t = new XMLNewsMessage.Article();
-                        t.setDescription("欢迎你的加入！");
-                        t.setPicurl("http://7xq5uu.com1.z0.glb.clouddn.com/images_want.jpg");
-                        t.setTitle("ISDC招新报名表");
-                        t.setUrl("https://www.scuisdc.org/api/join/" + eventMessage.getFromUserName());
-                        XMLNewsMessage xmlNewsMessage = new XMLNewsMessage(
-                                eventMessage.getFromUserName(),
-                                eventMessage.getToUserName(),
-                                Collections.singletonList(
-                                        t));
-                        return xmlNewsMessage.toXML();
-                    } else {
-                        return new XMLTextMessage(eventMessage.getFromUserName(), eventMessage.getToUserName(), "报名时间已经截止了哟，非常抱歉！").toXML();
-                    }
+                    return new XMLTextMessage(eventMessage.getFromUserName(), eventMessage.getToUserName(), "报名时间已经截止了哟，非常抱歉！").toXML();
                 } else if (eventMessage.getContent().contains("面试")) {
-                    Date date = joinService.generateInterviewDate(eventMessage.getFromUserName(), false);
-                    return new XMLTextMessage(eventMessage.getFromUserName(), eventMessage.getToUserName(), date == null ? "查询不到您的面试安排，请稍后再试！" : String.format("您的面试时间是：%s，面试地点为二基楼B座405教室，请准时到场！时间安排如有冲突请私戳管理员", new SimpleDateFormat("yyyy-MM-dd HH:mm").format(date))).toXML();
+                    ApplicationForm form = joinService.queryForm(eventMessage.getFromUserName()).orElse(null);
+                    String message = form == null ? "很抱歉我们并没有收到您的报名表！" : form.getPass() ? form.getName() + "你好！恭喜你通过了ISDC的面试，成为ISDC5.0的一员，希望接下来的大学四年我们可以相处愉快！一定要坚持来听课哦" : form.getName() + "你好！非常遗憾的是，我们没能在面试通过的名单里找到你=v=不管怎么样，还是希望你能坚持参与我们的活动，给我们一个大惊喜！";
+                    message += "ISDC新学期的第一次活动，萌新见面会将于9月23日（本周六）19点在江安校区二基楼B509教室开展=v=\n本次活动主要内容是大家互相认识一刚！同时也会讲一些诸如科学上网啊、代码规范啊、如何优雅省力的提问啊之类的问题！\n不管有没有通过面试，我们都希望能在周六晚上看到你的身影！\n这场面试并不能代表什么，对于通过面试的同学，这仅仅是一个小阶段的成功，要想有所发展还需继续努力；而对于那些惨遭滑铁卢的同学，暂时的失败并不是对你们今后的否定，你依然可以参加我们的每一次活动、授课，分享社团的学习资源，不断提高，证明自己。无关乎基础与天赋，只在乎你是否一往无前！";
+                    return new XMLTextMessage(eventMessage.getFromUserName(), eventMessage.getToUserName(), message).toXML();
                 }
-                return new XMLTextMessage(eventMessage.getFromUserName(), eventMessage.getToUserName(), "我们已经收到了您的消息，将会在24小时内作出回复。回复【报名】开始填写报名表，报名成功后回复【面试】获取后续面试安排").toXML();
+                return new XMLTextMessage(eventMessage.getFromUserName(), eventMessage.getToUserName(), "我们已经收到了您的消息，将会在24小时内作出回复。回复【面试】获取面试结果").toXML();
             }
         }
         return "";
