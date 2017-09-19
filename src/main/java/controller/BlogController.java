@@ -1,7 +1,9 @@
 package controller;
 
 import dto.NewCommentRequest;
+import dto.NewPostRequest;
 import dto.Response;
+import dto.UpdatePostRequest;
 import entity.Comment;
 import entity.Post;
 import entity.User;
@@ -9,6 +11,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import service.BlogService;
 import service.UserService;
+
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Copyright (c) 2017 Peter Mao). All rights reserved.
@@ -33,9 +39,31 @@ public class BlogController {
         return new Response<>(200, blogService.listPost(page, pageSize));
     }
 
+    @RequestMapping(value = "post/my-post", method = RequestMethod.GET)
+    public Response listMyPost(@CookieValue("accessToken") String accessToken) {
+        User user = userService.auth(accessToken);
+        if (user == null)
+            return new Response(500, "获取个人博文失败");
+        List<Map> myPostList = blogService.getPostByUserAccessToken(accessToken);
+        return new Response<>(200, myPostList);
+    }
+
+    @RequestMapping(value = "post/his-post/{user_name}", method = RequestMethod.GET)
+    public Response listHisPost(@PathVariable("user_name") String userName) {
+        System.out.println(userName);
+        List<Map> hisPosts = blogService.getPostByUserName(userName);
+        if (hisPosts != null)
+            return new Response<>(200, hisPosts);
+        else
+            return new Response<>(400, "获取指定用户博文失败");
+    }
+
     @RequestMapping(value = "post/{post_id}", method = RequestMethod.GET)
     public Response getPostById(@PathVariable("post_id") int postId) {
-        return new Response<>(200, blogService.getPostById(postId));
+        Map post = blogService.getPostById(postId);
+        if (post == null)
+            return new Response<>(500, "没有这篇博文");
+        return new Response<>(200, post);
     }
 
 
@@ -44,9 +72,34 @@ public class BlogController {
         return new Response<>(200, blogService.getCommentByPost(postId));
     }
 
-    @RequestMapping(value = "post", method = RequestMethod.POST)
-    public Response newPost(@CookieValue("accessToken") String accessToken) {
-        return new Response<>(200, "new Post");
+    @RequestMapping(value = "post/new-post", method = RequestMethod.POST)
+    public Response newPost(@CookieValue("accessToken") String accessToken, @RequestBody() NewPostRequest request) {
+        User user = userService.auth(accessToken);
+        if (user == null)
+            return new Response<>(500, "发送博文失败");
+        Post post = new Post();
+        post.setAuthor(user);
+        post.setContent(request.getContent());
+        post.setPreview(request.getPreview());
+        post.setTitle(request.getTitle());
+        post.setCreateDate(new Date());
+        post.setLastModified(new Date());
+        blogService.newPost(post);
+        return new Response<>(200);
+    }
+
+    @RequestMapping(value = "post/update-post", method = RequestMethod.POST)
+    public Response updatePost(@CookieValue("accessToken") String accessToken, @RequestBody() UpdatePostRequest request) {
+        User user = userService.auth(accessToken);
+        Post post = blogService.getFullPostById(request.getId());
+        if (post == null || !user.equals(post.getAuthor()))
+            return new Response<>(500, "更改博文失败");
+        post.setContent(request.getContent());
+        post.setPreview(request.getPreview());
+        post.setTitle(request.getTitle());
+        post.setLastModified(new Date());
+        blogService.updatePost(post);
+        return new Response<>(200);
     }
 
     @RequestMapping(value = "post/{post_id}/comment", method = RequestMethod.POST)
@@ -67,11 +120,23 @@ public class BlogController {
 
     @RequestMapping(value = "post/{post_id}", method = RequestMethod.DELETE)
     public Response delPost(@CookieValue("accessToken") String accessToken, @PathVariable("post_id") int postId) {
-        return new Response<>(200, "delete post");
+        if (userService.auth(accessToken).equals(blogService.getFullPostById(postId).getAuthor())) {
+            if (blogService.deletePost(postId))
+                return new Response<>(200);
+            else
+                return new Response<>(500, "删除博文失败");
+        } else
+            return new Response<>(500, "你不是这篇博文的作者，删除博文失败");
     }
 
     @RequestMapping(value = "post/{post_id}/comment/{comment_id}", method = RequestMethod.DELETE)
     public Response delComment(@CookieValue("accessToken") String accessToken, @PathVariable("post_id") int postId, @PathVariable("comment_id") int commentId) {
-        return new Response<>(200, "delete comment");
+        User user = userService.auth(accessToken);
+        User postAuthor = blogService.getFullPostById(postId).getAuthor();
+        User commentSender = blogService.getCommentById(commentId).getSender();
+        if ((user.equals(postAuthor) || user.equals(commentSender)) && blogService.deleteComment(commentId))
+            return new Response<>(200);
+        else
+            return new Response<>(500, "删除评论失败");
     }
 }

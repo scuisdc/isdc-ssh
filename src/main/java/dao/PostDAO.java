@@ -21,4 +21,8 @@ public interface PostDAO {
     void updatePost(Post post);
 
     Post getFullPostById(int postId);
+
+    List<Map> getPostByUserAccessToken(String accessToken);
+
+    List<Map> getPostByUserName(String userName);
 }

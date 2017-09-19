@@ -19,6 +19,10 @@ public interface BlogService {
 
     Post getFullPostById(int postId);
 
+    List<Map> getPostByUserAccessToken(String accessToken);
+
+    List<Map> getPostByUserName(String userName);
+
     boolean deletePost(int postId);
 
     List<Map> getCommentByPost(int postId);
@@ -26,4 +30,8 @@ public interface BlogService {
     void newComment(Comment comment);
 
     boolean deleteComment(int commentId);
+
+    void updatePost(Post post);
+
+    Comment getCommentById(int commentId);
 }
