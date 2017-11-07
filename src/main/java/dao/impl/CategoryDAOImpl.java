@@ -1,5 +1,6 @@
-package dao;
+package dao.impl;
 
+import dao.CategoryDAO;
 import entity.Category;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;

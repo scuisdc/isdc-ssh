@@ -1,4 +1,4 @@
-package service;
+package service.impl;
 
 import dao.CommentDAO;
 import dao.PostDAO;
@@ -6,6 +6,7 @@ import entity.Comment;
 import entity.Post;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import service.BlogService;
 
 import javax.transaction.Transactional;
 import java.util.List;
@@ -50,6 +51,16 @@ public class BlogServiceImpl implements BlogService {
     }
 
     @Override
+    public List<Map> getPostByUserAccessToken(String accessToken) {
+        return postDAO.getPostByUserAccessToken(accessToken);
+    }
+
+    @Override
+    public List<Map> getPostByUserName(String userName) {
+        return postDAO.getPostByUserName(userName);
+    }
+
+    @Override
     public boolean deletePost(int postId) {
         return postDAO.delPost(postId);
     }
@@ -70,5 +81,13 @@ public class BlogServiceImpl implements BlogService {
         return commentDAO.delComment(commentId);
     }
 
+    @Override
+    public void updatePost(Post post) {
+        postDAO.updatePost(post);
+    }
 
+    @Override
+    public Comment getCommentById(int commentId) {
+        return commentDAO.getCommentById(commentId);
+    }
 }

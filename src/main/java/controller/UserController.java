@@ -36,6 +36,7 @@ public class UserController {
             user.setUserName(request.getUserName());
             user.setPassword(request.getPassword());
             user.setEnabled(true);
+            user.setRoot(false);
             if (userService.signUp(user)) {
                 return new Response<>(200, "注册成功");
             }

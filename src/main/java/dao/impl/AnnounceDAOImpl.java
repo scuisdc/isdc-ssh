@@ -1,5 +1,6 @@
-package dao;
+package dao.impl;
 
+import dao.AnnounceDAO;
 import entity.Announce;
 import org.hibernate.SessionFactory;
 import org.hibernate.query.Query;

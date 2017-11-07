@@ -1,6 +1,5 @@
 package controller;
 
-import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import dto.AssetRequest;
 import dto.CalScoreRequest;
 import dto.Response;
@@ -13,7 +12,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 import service.JWCService;
 import service.KongMinHaoService;
-import service.KongMinHaoServicelmpl;
 
 import java.io.IOException;
 import java.util.Date;
