@@ -1,7 +1,7 @@
 package entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonIgnorePro;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import org.apache.commons.lang3.RandomStringUtils;
 
