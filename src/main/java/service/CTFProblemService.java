@@ -10,7 +10,9 @@ import java.util.List;
 public interface CTFProblemService {
     List<CTFProblem> getAllCTFProblems();
     List<CTFProblem> getCTFProblemsByName(String name);
+    CTFProblem getCTFProblemByID(int id);
     void addCTFProblem(CTFProblem ctfProblem);
-    void deleteCTFProblem(CTFProblem ctfProblem);
+    void deleteCTFProblem(int id);
     void updateCTFProblem(CTFProblem ctfProblem);
+
 }

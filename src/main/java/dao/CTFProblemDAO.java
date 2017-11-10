@@ -10,8 +10,8 @@ import java.util.List;
 public interface CTFProblemDAO {
         List<CTFProblem> getAllCTFProblems();
         List<CTFProblem> getCTFProblemsByName(String name);
-        List<CTFProblem> getCTFProblemByID(int id);
-        void deleteCTFProblem();
-        void UpdateCTFProblem(CTFProblem ctfProblem);
+        CTFProblem getCTFProblemByID(int id);
+        void deleteCTFProblem(int id);
+        void updateCTFProblem(CTFProblem ctfProblem);
         void addCTFProblem(CTFProblem ctfProblem);
 }

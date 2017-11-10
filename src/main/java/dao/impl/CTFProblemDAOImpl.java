@@ -3,6 +3,7 @@ package dao.impl;
 import dao.CTFProblemDAO;
 import entity.CTFProblem;
 import org.hibernate.SessionFactory;
+import org.hibernate.query.Query;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -21,33 +22,40 @@ public class CTFProblemDAOImpl implements CTFProblemDAO {
 
     @Override
     public List<CTFProblem> getAllCTFProblems() {
-        String hql = "";
-
-        return null;
+        String hql = "from CTFProblem c order by c.time desc ";
+        Query query = sessionFactory.getCurrentSession().createQuery(hql);
+        return query.list();
     }
 
     @Override
     public List<CTFProblem> getCTFProblemsByName(String name) {
-        return null;
+        String hql = "from CTFProblem c where c.name like ? ";
+        Query query = sessionFactory.getCurrentSession().createQuery(hql);
+        query.setParameter(0,"%"+name+"%");
+        return query.list();
     }
 
     @Override
-    public List<CTFProblem> getCTFProblemByID(int id) {
-        return null;
+    public CTFProblem getCTFProblemByID(int id) {
+        String hql = "from CTFProblem c where c.id = ? ";
+        Query query = sessionFactory.getCurrentSession().createQuery(hql);
+        query.setParameter(0,id);
+        return (CTFProblem) query.uniqueResult();
     }
 
     @Override
-    public void deleteCTFProblem() {
-
+    public void deleteCTFProblem(int id) {
+        String hql = "delete from CTFProblem c where c.id = ?";
+        Query query = sessionFactory.getCurrentSession().createQuery(hql);
+        query.setParameter(0,id);
     }
-
     @Override
-    public void UpdateCTFProblem(CTFProblem ctfProblem) {
-
+    public void updateCTFProblem(CTFProblem ctfProblem) {
+        sessionFactory.getCurrentSession().update(ctfProblem);
     }
 
     @Override
     public void addCTFProblem(CTFProblem ctfProblem) {
-
+        sessionFactory.getCurrentSession().persist(ctfProblem);
     }
 }
