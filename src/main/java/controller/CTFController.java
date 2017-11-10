@@ -76,6 +76,5 @@ public class CTFController {
         else return new Response(200,"答案错误");
     }
 
-
 }
 
