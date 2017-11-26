@@ -87,7 +87,6 @@ public class CTFController {
 
             CTFFlagGetter ctfFlagGetter = new CTFFlagGetter(ctfAnswerRequest.getProblemID(), ctfAnswerRequest.getUserEmail(), formatDate(new Date()));
             ctfProblemService.addCTFFlagGetter(ctfFlagGetter);
-
             return new Response(200, "答案正确");
         } else return new Response(500, "答案错误");
     }
