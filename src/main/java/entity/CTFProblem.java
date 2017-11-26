@@ -24,23 +24,43 @@ public class CTFProblem {
     @Column
     private String data;
     @Column
-    private Date time;
+    private String time;
     @Column
     private String userEmail;
     @Column
     private String flag;
     @Column
-    @ElementCollection
-    private Set<String> flagGetters;
+    private String magnet;
+    @Column
+    private String UserName;
 
-    public CTFProblem(String title, String data, Date time, String userEmail, String flag) {
+    public CTFProblem() {
+    }
+
+    public CTFProblem(String title, String data, String time, String userEmail, String flag, String magnet) {
         this.title = title;
         this.data = data;
         this.time = time;
         this.userEmail = userEmail;
         this.flag = flag;
+        this.magnet = magnet;
     }
 
+    public String getUserName() {
+        return UserName;
+    }
+
+    public void setUserName(String userName) {
+        UserName = userName;
+    }
+
+    public String getMagnet() {
+        return magnet;
+    }
+
+    public void setMagnet(String magnet) {
+        this.magnet = magnet;
+    }
     public int getId() {
         return id;
     }
@@ -65,11 +85,11 @@ public class CTFProblem {
         this.data = data;
     }
 
-    public Date getTime() {
+    public String getTime() {
         return time;
     }
 
-    public void setTime(Date time) {
+    public void setTime(String time) {
         this.time = time;
     }
 
@@ -88,12 +108,6 @@ public class CTFProblem {
     public void setFlag(String flag) {
         this.flag = flag;
     }
-   public Set<String> getFlagGetters() {
-        return flagGetters;
-    }
 
-    public void setFlagGetters(Set<String> flagGetters) {
-        this.flagGetters = flagGetters;
-    }
 }
 

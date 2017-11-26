@@ -1,5 +1,6 @@
 package service;
 
+import entity.CTFFlagGetter;
 import entity.CTFProblem;
 
 import java.util.List;
@@ -9,10 +10,20 @@ import java.util.List;
  */
 public interface CTFProblemService {
     List<CTFProblem> getAllCTFProblems();
+
     List<CTFProblem> getCTFProblemsByName(String name);
+
+    List<CTFFlagGetter> getAllCTFFlagGetter();
+
+    List<CTFFlagGetter> getCTFFlagGetterByID(int id);
+
     CTFProblem getCTFProblemByID(int id);
+
     void addCTFProblem(CTFProblem ctfProblem);
-    void deleteCTFProblem(int id);
+
+    boolean deleteCTFProblem(int id);
+
     void updateCTFProblem(CTFProblem ctfProblem);
 
+    void addCTFFlagGetter(CTFFlagGetter ctfFlagGetter);
 }

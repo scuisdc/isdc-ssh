@@ -1,6 +1,7 @@
 package service.impl;
 
 import dao.CTFProblemDAO;
+import entity.CTFFlagGetter;
 import entity.CTFProblem;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -32,6 +33,16 @@ public class CTFProblemServiceImpl implements CTFProblemService {
     }
 
     @Override
+    public List<CTFFlagGetter> getAllCTFFlagGetter() {
+        return ctfProblemDAO.getAllCTFFlagGetter();
+    }
+
+    @Override
+    public List<CTFFlagGetter> getCTFFlagGetterByID(int id) {
+        return ctfProblemDAO.getCTFFlagGetterByID(id);
+    }
+
+    @Override
     public CTFProblem getCTFProblemByID(int id) {
         return ctfProblemDAO.getCTFProblemByID(id);
     }
@@ -42,12 +53,17 @@ public class CTFProblemServiceImpl implements CTFProblemService {
     }
 
     @Override
-    public void deleteCTFProblem(int id) {
-        ctfProblemDAO.deleteCTFProblem(id);
+    public boolean deleteCTFProblem(int id) {
+       return ctfProblemDAO.deleteCTFProblem(id);
     }
 
     @Override
     public void updateCTFProblem(CTFProblem ctfProblem) {
         ctfProblemDAO.updateCTFProblem(ctfProblem);
+    }
+
+    @Override
+    public void addCTFFlagGetter(CTFFlagGetter ctfFlagGetter) {
+
     }
 }

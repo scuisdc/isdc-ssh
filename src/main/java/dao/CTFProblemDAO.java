@@ -1,5 +1,6 @@
 package dao;
 
+import entity.CTFFlagGetter;
 import entity.CTFProblem;
 
 import java.util.List;
@@ -10,8 +11,14 @@ import java.util.List;
 public interface CTFProblemDAO {
         List<CTFProblem> getAllCTFProblems();
         List<CTFProblem> getCTFProblemsByName(String name);
+        List<CTFFlagGetter> getAllCTFFlagGetter();
+        List<CTFFlagGetter> getCTFFlagGetterByID(int id);
+
         CTFProblem getCTFProblemByID(int id);
-        void deleteCTFProblem(int id);
+        boolean deleteCTFProblem(int id);
         void updateCTFProblem(CTFProblem ctfProblem);
         void addCTFProblem(CTFProblem ctfProblem);
+        void addCTFFlagGetter(CTFFlagGetter ctfFlagGetter);
+        void deleteCTFFlagGetter(int id,String userEmail);
+
 }

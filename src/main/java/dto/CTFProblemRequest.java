@@ -7,10 +7,19 @@ import java.util.Date;
  */
 public class CTFProblemRequest {
     private int id;
-    private String userAccessToken;
+
     private String title;
     private String data;
     private String flag;
+    private String magnet;
+
+    public String getMagnet() {
+        return magnet;
+    }
+
+    public void setMagnet(String magnet) {
+        this.magnet = magnet;
+    }
 
     public int getId() {
         return id;
@@ -28,13 +37,7 @@ public class CTFProblemRequest {
         this.flag = flag;
     }
 
-    public String getUserAccessToken() {
-        return userAccessToken;
-    }
 
-    public void setUserAccessToken(String userAccessToken) {
-        this.userAccessToken = userAccessToken;
-    }
 
     public String getTitle() {
         return title;
