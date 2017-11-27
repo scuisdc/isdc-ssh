@@ -74,7 +74,6 @@ public class CTFController {
             ctfProblem.setFlag(ctfProblemRequest.getFlag());
             ctfProblem.setMagnet(ctfProblemRequest.getMagnet());
             ctfProblemService.updateCTFProblem(ctfProblem);
-
             return new Response<>(200, "更新成功");
         } else return new Response<>(403);
     }
