@@ -32,7 +32,7 @@ public class KongMinHaoDAOImpl implements KongMinHaoDAO {
 
     @Override
     public Asset getAssetByName(String name) {
-        String hql = "from Asset a where a.name=? ";
+        String hql = "from Asset a where a.name =?";
         Asset result = (Asset) sessionFactory.getCurrentSession().createQuery(hql).setParameter(0,name).uniqueResult();
         if(result!=null){
             return result;
