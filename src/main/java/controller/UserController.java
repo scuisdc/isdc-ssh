@@ -3,6 +3,7 @@ package controller;
 import dto.LoginRequest;
 import dto.Response;
 import dto.SignUpRequest;
+import dto.UserResponse;
 import entity.User;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,7 +51,7 @@ public class UserController {
     public Response login(@RequestBody LoginRequest request, HttpSession session, HttpServletResponse response) {
         if (session.getAttribute("_code") != null && session.getAttribute("_code").equals(request.getCheckCode())) {
 
-            User user = userService.login(request.getEmail(), request.getPassword());
+            UserResponse user = userService.login(request.getEmail(), request.getPassword());
             if (user != null) {
                 return new Response<>(200, user);
             }
@@ -62,7 +63,7 @@ public class UserController {
 
     @RequestMapping(value = "auth", method = RequestMethod.GET)
     public Response login(@CookieValue("accessToken") String accessToken, HttpServletResponse response) {
-        User user = userService.auth(accessToken);
+        UserResponse user = userService.auth(accessToken);
         if (user != null) {
             return new Response<>(200, user);
         }

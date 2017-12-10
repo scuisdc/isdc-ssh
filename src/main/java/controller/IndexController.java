@@ -35,7 +35,7 @@ public class IndexController {
 
     @RequestMapping(value = "banner", method = RequestMethod.GET)
     public Response listBanner() {
-        return new Response<>(200, bannerService.listAll());
+        return new Response<>(200, bannerService.findAll());
     }
 
 }

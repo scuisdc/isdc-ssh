@@ -17,17 +17,17 @@ import java.util.List;
 @Transactional
 public class AnnounceServiceImpl implements AnnounceService {
 
-    private final AnnounceDAO userDAO;
+    private final AnnounceDAO announceDAO;
 
 
     @Autowired
-    public AnnounceServiceImpl(AnnounceDAO userDAO) {
-        this.userDAO = userDAO;
+    public AnnounceServiceImpl(AnnounceDAO announceDAO) {
+        this.announceDAO = announceDAO;
     }
 
     @Override
     public List<Announce> listAll() {
-        return userDAO.getAllAnnounce();
+        return announceDAO.findAll();
     }
 
 }

@@ -1,7 +1,5 @@
 package entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
 import javax.persistence.*;
 import java.util.Date;
 
@@ -13,7 +11,6 @@ import java.util.Date;
 @Table(name = "suggest")
 public class Suggest {
 
-    @JsonIgnore
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id;

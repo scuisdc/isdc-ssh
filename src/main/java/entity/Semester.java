@@ -1,7 +1,6 @@
 
 package entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 
 import javax.persistence.*;
@@ -13,7 +12,6 @@ import java.util.List;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class Semester {
 
-    @JsonIgnore
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id;
@@ -21,12 +19,10 @@ public class Semester {
     @Column(name = "title")
     private String title;
 
-    @JsonIgnore
     @Column(name = "start_date")
     @Temporal(value = TemporalType.DATE)
     private Date semesterStart;
 
-    @JsonIgnore
     @Column(name = "end_date")
     @Temporal(value = TemporalType.DATE)
     private Date semesterEnd;

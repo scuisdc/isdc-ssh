@@ -1,6 +1,5 @@
 package entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 
 import javax.persistence.*;
@@ -15,7 +14,6 @@ import java.util.Date;
 @Table(name = "announce")
 public class Announce {
 
-    @JsonIgnore
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id;
@@ -27,7 +25,6 @@ public class Announce {
     @Column(name = "content")
     private String content;
 
-    @JsonIgnore
     @Column(name = "enabled")
     private Boolean enabled;
 

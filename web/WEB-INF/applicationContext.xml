@@ -89,4 +89,6 @@
             <bean class="java.util.concurrent.ThreadPoolExecutor$CallerRunsPolicy"/>
         </property>
     </bean>
+
+    <bean id="modelMapper" class="org.modelmapper.ModelMapper"/>
 </beans>

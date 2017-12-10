@@ -1,6 +1,5 @@
 package entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 
 import javax.persistence.*;
@@ -32,7 +31,6 @@ public class Comment {
 
     @ManyToOne
     @JoinColumn(name = "post_id")
-    @JsonIgnore
     private Post post;
 
     public Integer getId() {

@@ -19,21 +19,17 @@ public class Course {
     @Transient
     @JsonIgnore
     private static SimpleDateFormat formatDate = new SimpleDateFormat("yyyy-MM-dd");
-    @JsonIgnore
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id;
     @Column(name = "week")
     private String week;
-    @JsonIgnore
     @Temporal(TemporalType.TIME)
     @Column(name = "time_start")
     private Date startTime;
-    @JsonIgnore
     @Temporal(TemporalType.TIME)
     @Column(name = "time_end")
     private Date endTime;
-    @JsonIgnore
     @Temporal(TemporalType.DATE)
     @Column(name = "date")
     private Date courseDate;

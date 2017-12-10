@@ -1,13 +1,16 @@
 package service.impl;
 
 import dao.UserDAO;
+import dto.UserResponse;
 import entity.User;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import service.UserService;
 
 import javax.transaction.Transactional;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Copyright (c) 2017 Peter Mao. All rights reserved.
@@ -18,35 +21,37 @@ import java.util.List;
 public class UserServiceImpl implements UserService {
 
     private final UserDAO userDAO;
+    private final ModelMapper modelMapper;
 
 
     @Autowired
-    public UserServiceImpl(UserDAO userDAO) {
+    public UserServiceImpl(UserDAO userDAO, ModelMapper modelMapper) {
         this.userDAO = userDAO;
+        this.modelMapper = modelMapper;
     }
 
     @Override
     public boolean signUp(User user) {
         if (userDAO.getUserByEmail(user.getEmail()) == null) {
-            userDAO.addUser(user);
+            userDAO.save(user);
             return true;
         }
         return false;
     }
 
     @Override
-    public List<User> listAll() {
-        return userDAO.getAllUser();
+    public List<UserResponse> listAll() {
+        return userDAO.findAll().stream().map(p -> modelMapper.map(p, UserResponse.class)).collect(Collectors.toList());
     }
 
     @Override
-    public User login(String email, String password) {
+    public UserResponse login(String email, String password) {
         User userByEmail = userDAO.getUserByEmail(email);
-        return userByEmail != null && userByEmail.getPassword().equals(password) ? userByEmail : null;
+        return userByEmail != null && userByEmail.getPassword().equals(password) ? modelMapper.map(userByEmail, UserResponse.class) : null;
     }
 
     @Override
-    public User auth(String accessToken) {
-        return userDAO.getUserByToken(accessToken);
+    public UserResponse auth(String accessToken) {
+        return modelMapper.map(userDAO.getUserByToken(accessToken), UserResponse.class);
     }
 }

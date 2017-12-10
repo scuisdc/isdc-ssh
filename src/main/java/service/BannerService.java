@@ -10,13 +10,11 @@ import java.util.List;
  */
 public interface BannerService {
 
-    List<Banner> listAll();
+    List<Banner> findAll();
 
-    void addBanner(Banner banner);
+    void save(Banner banner);
 
-    void updateBanner(Banner banner);
+    void update(Banner banner);
 
-    boolean deleteBanner(Banner banner);
-
-    Banner findBannerByTitle(String title);
+    void delete(Banner banner);
 }

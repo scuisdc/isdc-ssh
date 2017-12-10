@@ -1,6 +1,5 @@
 package entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 
 import javax.persistence.*;
@@ -13,7 +12,6 @@ import javax.persistence.*;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @Table(name = "index_banner")
 public class Banner {
-    @JsonIgnore
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id;
@@ -36,7 +34,6 @@ public class Banner {
     @Column(name = "background_pic")
     private String pic;
 
-    @JsonIgnore
     @Column(name = "piority")
     private Integer piority;
 

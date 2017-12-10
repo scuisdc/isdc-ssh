@@ -10,7 +10,6 @@ import javax.persistence.*;
 @Table(name = "cms_file")
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class File {
-    @JsonIgnore
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id;

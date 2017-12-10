@@ -1,5 +1,6 @@
 package dao.impl;
 
+import dao.AbstractJpaDao;
 import dao.ScoreRequestDAO;
 import entity.ScoreRequest;
 import org.hibernate.SessionFactory;
@@ -13,22 +14,13 @@ import java.util.Date;
  * Created by mao on 17-7-25.
  */
 @Repository
-public class ScoreRequestDAOImpl implements ScoreRequestDAO {
+public class ScoreRequestDAOImpl extends AbstractJpaDao<ScoreRequest> implements ScoreRequestDAO {
     private final SessionFactory sessionFactory;
 
     @Autowired
     public ScoreRequestDAOImpl(SessionFactory sessionFactory) {
+        super(sessionFactory, ScoreRequest.class);
         this.sessionFactory = sessionFactory;
-    }
-
-    @Override
-    public void addRequest(ScoreRequest request) {
-        this.sessionFactory.getCurrentSession().persist(request);
-    }
-
-    @Override
-    public void updateRequest(ScoreRequest request) {
-        this.sessionFactory.getCurrentSession().update(request);
     }
 
     @Override

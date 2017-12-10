@@ -1,11 +1,10 @@
 package entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import org.apache.commons.lang3.RandomStringUtils;
 
 import javax.persistence.*;
+import java.util.List;
 
 /**
  * Copyright (c) 2017 Peter Mao. All rights reserved.
@@ -14,10 +13,8 @@ import javax.persistence.*;
 @Entity
 @Table(name = "user")
 @JsonInclude(JsonInclude.Include.NON_NULL)
-@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class User {
 
-    @JsonIgnore
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id;
@@ -30,21 +27,24 @@ public class User {
     @Column(name = "email", unique = true)
     private String email;
 
-    @JsonIgnore
     @Column(name = "password", length = 30)
     private String password;
 
-    @JsonIgnore
     @Column(name = "enabled")
     private Boolean enabled;
 
-    @JsonIgnore
     @Column(name = "is_root", columnDefinition = "boolean default false", nullable = false)
     private Boolean isRoot;
 
 
     @Column(name = "access_token", unique = true, length = 16)
     private String accessToken;
+
+    @OneToMany(mappedBy = "user")
+    private List<Mailbox> mailboxList;
+
+    @OneToMany(mappedBy = "author")
+    private List<Post> postList;
 
     public User() {
     }

@@ -27,22 +27,22 @@ public class SemesterServiceImpl implements SemesterService {
 
     @Override
     public List<Semester> listAll() {
-        return semesterDAO.listAllSemester();
+        return semesterDAO.findAll();
     }
 
     @Override
     public void addSemester(Semester semester) {
-        semesterDAO.addSemester(semester);
+        semesterDAO.save(semester);
     }
 
     @Override
     public void updateSemester(Semester semester) {
-        semesterDAO.updateSemester(semester);
+        semesterDAO.update(semester);
     }
 
     @Override
-    public boolean deleteSemester(Semester semester) {
-        return semesterDAO.deleteSemester(semester);
+    public void deleteSemester(Semester semester) {
+        semesterDAO.delete(semester);
     }
 
     @Override

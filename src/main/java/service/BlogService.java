@@ -1,37 +1,38 @@
 package service;
 
+import dto.CommentResponse;
+import dto.PostPreviewResponse;
+import dto.PostResponse;
 import entity.Comment;
 import entity.Post;
 
+import java.util.Date;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Copyright (c) 2017 Peter Mao. All rights reserved.
  * Created by mao on 17-7-25.
  */
 public interface BlogService {
-    List<Map> listPost(int page, int pageSize);
+    List<PostPreviewResponse> listPost();
 
-    void newPost(Post post);
+    PostPreviewResponse getPostById(int postId);
 
-    Map getPostById(int postId);
+    PostResponse getFullPostById(int postId);
 
-    Post getFullPostById(int postId);
+    List<PostPreviewResponse> getPostsByEmail(String userName);
 
-    List<Map> getPostByUserAccessToken(String accessToken);
+    void delete(int postId);
 
-    List<Map> getPostByUserName(String userName);
-
-    boolean deletePost(int postId);
-
-    List<Map> getCommentByPost(int postId);
+    List<CommentResponse> getCommentByPost(int postId);
 
     void newComment(Comment comment);
 
-    boolean deleteComment(int commentId);
+    void deleteComment(int commentId);
 
     void updatePost(Post post);
 
-    Comment getCommentById(int commentId);
+    CommentResponse getCommentById(int commentId);
+
+    void save(String email, String preview, String content, String title, Date created, Date lastModified);
 }
