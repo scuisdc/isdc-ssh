@@ -37,7 +37,7 @@ public class User {
     private Boolean isRoot;
 
 
-    @Column(name = "access_token", unique = true, length = 16)
+    @Column(name = "access_token", unique = true, length = 50)
     private String accessToken;
 
     @OneToMany(mappedBy = "user")

@@ -7,6 +7,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import service.UserService;
+import support.TokenAuthenticationService;
 
 import javax.transaction.Transactional;
 import java.util.List;
@@ -47,7 +48,11 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserResponse login(String email, String password) {
         User userByEmail = userDAO.getUserByEmail(email);
-        return userByEmail != null && userByEmail.getPassword().equals(password) ? modelMapper.map(userByEmail, UserResponse.class) : null;
+        if (userByEmail != null && userByEmail.getPassword().equals(password)) {
+            userByEmail.setAccessToken(TokenAuthenticationService.addAuthentication(String.valueOf(userByEmail.getId())));
+            return modelMapper.map(userByEmail, UserResponse.class);
+        }
+        return null;
     }
 
     @Override

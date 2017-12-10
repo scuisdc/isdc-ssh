@@ -3,8 +3,8 @@ package service;
 import dto.CommentResponse;
 import dto.PostPreviewResponse;
 import dto.PostResponse;
-import entity.Comment;
 import entity.Post;
+import entity.User;
 
 import java.util.Date;
 import java.util.List;
@@ -22,17 +22,19 @@ public interface BlogService {
 
     List<PostPreviewResponse> getPostsByEmail(String userName);
 
-    void delete(int postId);
+    boolean delete(Integer userId, Integer postId);
 
     List<CommentResponse> getCommentByPost(int postId);
 
-    void newComment(Comment comment);
-
-    void deleteComment(int commentId);
+    boolean deleteComment(Integer userId, Integer postId, Integer commentId);
 
     void updatePost(Post post);
 
     CommentResponse getCommentById(int commentId);
 
     void save(String email, String preview, String content, String title, Date created, Date lastModified);
+
+    boolean updatePost(Integer userId, Integer postId, String content, String preview, String title, Date lastModified);
+
+    void newComment(User user, int postId, Date commentDate, String content);
 }

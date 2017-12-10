@@ -22,6 +22,7 @@
     <context:component-scan base-package="dao"/>
     <context:component-scan base-package="entity"/>
     <context:component-scan base-package="job"/>
+    <context:component-scan base-package="support"/>
 
     <context:property-placeholder location="/WEB-INF/hibernate.properties,/WEB-INF/weixin.properties"/>
     <task:scheduler id="taskScheduler"/>
@@ -66,20 +67,6 @@
 
     <tx:annotation-driven/>
 
-    <bean id="transactionProxy"
-          class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean"
-          abstract="true">
-        <property name="transactionManager" ref="transactionManager"/>
-        <property name="transactionAttributes">
-            <props>
-                <prop key="add*">PROPAGATION_REQUIRED,-Exception</prop>
-                <prop key="modify*">PROPAGATION_REQUIRED,-myException</prop>
-                <prop key="del*">PROPAGATION_REQUIRED</prop>
-                <prop key="*">PROPAGATION_REQUIRED</prop>
-            </props>
-        </property>
-    </bean>
-
     <bean id="taskExecutor" class="org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor">
         <property name="corePoolSize" value="10"/>
         <property name="maxPoolSize" value="50"/>
@@ -91,4 +78,8 @@
     </bean>
 
     <bean id="modelMapper" class="org.modelmapper.ModelMapper"/>
+
+    <mvc:interceptors>
+        <bean class="support.AuthorizationInterceptor"/>
+    </mvc:interceptors>
 </beans>

@@ -8,6 +8,7 @@ import dto.PostPreviewResponse;
 import dto.PostResponse;
 import entity.Comment;
 import entity.Post;
+import entity.User;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -60,8 +61,13 @@ public class BlogServiceImpl implements BlogService {
     }
 
     @Override
-    public void delete(int postId) {
-        postDAO.deleteById(postId);
+    public boolean delete(Integer userId, Integer postId) {
+        Post one = postDAO.findOne(postId);
+        if (one.getAuthor().getId().equals(userId)) {
+            postDAO.delete(one);
+            return true;
+        }
+        return false;
     }
 
     @Override
@@ -69,15 +75,15 @@ public class BlogServiceImpl implements BlogService {
         return commentDAO.getCommentByPost(postId).stream().map(c -> modelMapper.map(c, CommentResponse.class)).collect(Collectors.toList());
     }
 
-
     @Override
-    public void newComment(Comment comment) {
-        commentDAO.save(comment);
-    }
-
-    @Override
-    public void deleteComment(int commentId) {
-        commentDAO.deleteById(commentId);
+    public boolean deleteComment(Integer userId, Integer postId, Integer commentId) {
+        Comment comment = commentDAO.findOne(commentId);
+        Post post = postDAO.findOne(postId);
+        if (comment != null && comment.getSender().getId().equals(userId) || post != null && post.getAuthor().getId().equals(userId)) {
+            commentDAO.delete(comment);
+            return true;
+        }
+        return false;
     }
 
     @Override
@@ -100,5 +106,29 @@ public class BlogServiceImpl implements BlogService {
         post.setAuthor(userDAO.getUserByEmail(email));
         post.setTitle(title);
         postDAO.save(post);
+    }
+
+    @Override
+    public boolean updatePost(Integer userId, Integer postId, String content, String preview, String title, Date lastModified) {
+        Post post = postDAO.findOne(postId);
+        if (post != null && post.getAuthor().getId().equals(userId)) {
+            post.setContent(content);
+            post.setPreview(preview);
+            post.setTitle(title);
+            post.setLastModified(lastModified);
+            updatePost(post);
+            return true;
+        }
+        return false;
+    }
+
+    @Override
+    public void newComment(User user, int postId, Date commentDate, String content) {
+        Comment comment = new Comment();
+        comment.setCommentDate(commentDate);
+        comment.setContent(content);
+        comment.setSender(user);
+        comment.setPost(postDAO.findOne(postId));
+        commentDAO.save(comment);
     }
 }
