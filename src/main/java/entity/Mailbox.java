@@ -1,5 +1,7 @@
 package entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 import java.util.List;
 
@@ -11,12 +13,17 @@ public class Mailbox {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id;
 
+    @JsonIgnore
     @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY, targetEntity = User.class)
     private User user;
 
     private String smtpServer;
 
+    private Integer smtpPort;
+
     private String pop3Server;
+
+    private Integer pop3Port;
 
     private String account;
 
@@ -89,5 +96,21 @@ public class Mailbox {
 
     public void setMailList(List<Mail> mailList) {
         this.mailList = mailList;
+    }
+
+    public Integer getPop3Port() {
+        return pop3Port;
+    }
+
+    public void setPop3Port(Integer pop3Port) {
+        this.pop3Port = pop3Port;
+    }
+
+    public Integer getSmtpPort() {
+        return smtpPort;
+    }
+
+    public void setSmtpPort(Integer smtpPort) {
+        this.smtpPort = smtpPort;
     }
 }

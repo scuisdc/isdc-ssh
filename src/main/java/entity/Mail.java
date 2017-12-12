@@ -1,5 +1,7 @@
 package entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 
 @Entity
@@ -17,9 +19,11 @@ public class Mail {
 
     private String receiver;
 
+    @JsonIgnore
     @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY, targetEntity = Mailbox.class)
     private Mailbox mailbox;
 
+    @JsonIgnore
     @ManyToOne(cascade = {CascadeType.REFRESH, CascadeType.PERSIST, CascadeType.MERGE})
     private MailFolder mailFolder;
 

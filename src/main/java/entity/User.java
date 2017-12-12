@@ -1,7 +1,6 @@
 package entity;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import org.apache.commons.lang3.RandomStringUtils;
 
 import javax.persistence.*;
 import java.util.List;
@@ -100,10 +99,6 @@ public class User {
 
     public void setAccessToken(String accessToken) {
         this.accessToken = accessToken;
-    }
-
-    public void generateToken() {
-        setAccessToken(RandomStringUtils.randomAlphanumeric(16));
     }
 
     public Boolean getRoot() {
