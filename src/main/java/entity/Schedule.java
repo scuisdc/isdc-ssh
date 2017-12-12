@@ -1,6 +1,7 @@
 
 package entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 
 import javax.persistence.*;
@@ -21,6 +22,7 @@ public class Schedule {
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "schedule", fetch = FetchType.LAZY)
     private List<Course> course;
 
+    @JsonIgnore
     @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY, targetEntity = Semester.class)
     @JoinColumn(name = "semester_id")
     private Semester semester;
