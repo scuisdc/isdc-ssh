@@ -56,7 +56,7 @@ public class UserController {
     }
 
     @RequestMapping(value = "auth", method = RequestMethod.POST)
-    public Response login(@RequestBody LoginRequest request, HttpSession session, HttpServletResponse response) {
+    public Response login(@RequestBody LoginRequest request, HttpSession session) {
         if (session.getAttribute("_code") != null && session.getAttribute("_code").equals(request.getCheckCode())) {
 
             UserResponse user = userService.login(request.getEmail(), request.getPassword());
@@ -72,7 +72,6 @@ public class UserController {
     @RequestMapping(value = "auth", method = RequestMethod.GET)
     @Authorization
     public Response login(@CurrentUser User user) {
-
         return new Response<>(200, modelMapper.map(user, UserResponse.class));
     }
 

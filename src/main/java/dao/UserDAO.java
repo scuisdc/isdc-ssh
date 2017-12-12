@@ -11,4 +11,6 @@ public interface UserDAO extends IGenericDao<User> {
     User getUserByEmail(String email);
 
     User getUserByToken(String accessToken);
+
+    User getUserByName(String userName);
 }

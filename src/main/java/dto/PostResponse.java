@@ -10,6 +10,8 @@ public class PostResponse {
     private Date createDate;
     private Date lastModified;
     private String authorEmail;
+    private String authorUserName;
+    private String preview;
 
     public String getAuthorEmail() {
         return authorEmail;
@@ -58,5 +60,21 @@ public class PostResponse {
 
     public void setLastModified(Date lastModified) {
         this.lastModified = lastModified;
+    }
+
+    public String getAuthorUserName() {
+        return authorUserName;
+    }
+
+    public void setAuthorUserName(String authorUserName) {
+        this.authorUserName = authorUserName;
+    }
+
+    public String getPreview() {
+        return preview;
+    }
+
+    public void setPreview(String preview) {
+        this.preview = preview;
     }
 }

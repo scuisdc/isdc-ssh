@@ -44,29 +44,11 @@ public class Post {
     @Column(name = "preview")
     private String preview;
 
-    @ManyToMany(targetEntity = Category.class, cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @ManyToMany(targetEntity = Category.class, fetch = FetchType.EAGER)
     private List<Category> categories;
 
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "post")
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "post")
     private List<Comment> comments;
-
-
-    public Post(String title, Date createDate, Date lastModified, String preview, List<Category> categories) {
-        this.title = title;
-        this.createDate = createDate;
-        this.lastModified = lastModified;
-//        this.author = new User(user.getUserName(), user.getEmail());
-        this.preview = preview;
-        this.categories = categories;
-
-    }
-
-    public Post() {
-    }
-
-    public Post(String content) {
-        this.content = content;
-    }
 
     public Integer getId() {
         return id;

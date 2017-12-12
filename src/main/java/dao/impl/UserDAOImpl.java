@@ -40,4 +40,13 @@ public class UserDAOImpl extends AbstractJpaDao<User> implements UserDAO {
 
         return (User) query.uniqueResult();
     }
+
+    @Override
+    public User getUserByName(String userName) {
+        String hql = "from User u where u.userName=? and u.enabled=true";
+        Query query = sessionFactory.getCurrentSession().createQuery(hql);
+        query.setParameter(0, userName);
+
+        return (User) query.uniqueResult();
+    }
 }

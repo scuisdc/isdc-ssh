@@ -9,6 +9,7 @@ public class PostPreviewResponse {
     private Date createDate;
     private Date lastModified;
     private String authorEmail;
+    private String authorUserName;
 
     public Integer getId() {
         return id;
@@ -56,5 +57,13 @@ public class PostPreviewResponse {
 
     public void setAuthorEmail(String authorEmail) {
         this.authorEmail = authorEmail;
+    }
+
+    public String getAuthorUserName() {
+        return authorUserName;
+    }
+
+    public void setAuthorUserName(String authorUserName) {
+        this.authorUserName = authorUserName;
     }
 }

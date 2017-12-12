@@ -13,6 +13,9 @@
                 <property name="writeAcceptCharset" value="false"/>
             </bean>
         </mvc:message-converters>
+        <mvc:argument-resolvers>
+            <bean class="support.CurrentUserMethodArgumentResolver"/>
+        </mvc:argument-resolvers>
     </mvc:annotation-driven>
 
     <mvc:default-servlet-handler/>

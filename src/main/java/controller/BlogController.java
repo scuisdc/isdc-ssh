@@ -36,9 +36,9 @@ public class BlogController {
         return new Response<>(200, blogService.listPost());
     }
 
-    @RequestMapping(value = "post/author/{user_email}", method = RequestMethod.GET)
-    public Response listMyPost(@PathVariable("user_email") String email) {
-        List<PostPreviewResponse> myPostList = blogService.getPostsByEmail(email);
+    @RequestMapping(value = "{userName}", method = RequestMethod.GET)
+    public Response listMyPost(@PathVariable("userName") String userName) {
+        List<PostPreviewResponse> myPostList = blogService.getPostsByUserName(userName);
         return new Response<>(200, myPostList);
     }
 

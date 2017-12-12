@@ -46,12 +46,23 @@ public class BlogServiceImpl implements BlogService {
 
     @Override
     public PostPreviewResponse getPostById(int postId) {
-        return modelMapper.map(postDAO.findOne(postId), PostPreviewResponse.class);
+        Post one = postDAO.findOne(postId);
+        if (one != null) {
+            return modelMapper.map(one, PostPreviewResponse.class);
+        } else {
+            return null;
+        }
     }
 
     @Override
     public PostResponse getFullPostById(int postId) {
-        return modelMapper.map(postDAO.findOne(postId), PostResponse.class);
+        Post one = postDAO.findOne(postId);
+        if (one != null) {
+            return modelMapper.map(one, PostResponse.class);
+        } else {
+            return null;
+        }
+
     }
 
 
@@ -130,5 +141,11 @@ public class BlogServiceImpl implements BlogService {
         comment.setSender(user);
         comment.setPost(postDAO.findOne(postId));
         commentDAO.save(comment);
+    }
+
+    @Override
+    public List<PostPreviewResponse> getPostsByUserName(String userName) {
+        User user = userDAO.getUserByName(userName);
+        return postDAO.getPostByEmail(user.getEmail()).stream().map(p -> modelMapper.map(p, PostPreviewResponse.class)).collect(Collectors.toList());
     }
 }

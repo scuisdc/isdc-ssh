@@ -1,13 +1,13 @@
 package dto;
 
-import entity.User;
-
 import java.util.Date;
 
 public class CommentResponse {
     private Integer id;
 
-    private String sender;
+    private String senderUserName;
+
+    private String senderEmail;
 
     private String content;
 
@@ -15,20 +15,28 @@ public class CommentResponse {
 
     private Integer postId;
 
+    public String getSenderUserName() {
+        return senderUserName;
+    }
+
+    public void setSenderUserName(String senderUserName) {
+        this.senderUserName = senderUserName;
+    }
+
+    public String getSenderEmail() {
+        return senderEmail;
+    }
+
+    public void setSenderEmail(String senderEmail) {
+        this.senderEmail = senderEmail;
+    }
+
     public Integer getId() {
         return id;
     }
 
     public void setId(Integer id) {
         this.id = id;
-    }
-
-    public String getSender() {
-        return sender;
-    }
-
-    public void setSender(User sender) {
-        this.sender = sender.getEmail();
     }
 
     public String getContent() {

@@ -37,4 +37,6 @@ public interface BlogService {
     boolean updatePost(Integer userId, Integer postId, String content, String preview, String title, Date lastModified);
 
     void newComment(User user, int postId, Date commentDate, String content);
+
+    List<PostPreviewResponse> getPostsByUserName(String userName);
 }
