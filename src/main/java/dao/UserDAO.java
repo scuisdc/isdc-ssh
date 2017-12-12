@@ -2,23 +2,15 @@ package dao;
 
 import entity.User;
 
-import java.util.List;
-
 /**
  * Copyright (c) 2017 Peter Mao. All rights reserved.
  * Created by mao on 17-7-21.
  */
-public interface UserDAO {
+public interface UserDAO extends IGenericDao<User> {
 
     User getUserByEmail(String email);
 
-    List<User> getAllUser();
-
-    void addUser(User user);
-
-    boolean delUser(String id);
-
-    boolean updateUser(User user);
-
     User getUserByToken(String accessToken);
+
+    User getUserByName(String userName);
 }

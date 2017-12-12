@@ -5,62 +5,36 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import javax.persistence.*;
 import java.util.Date;
 import java.util.List;
-import java.util.Set;
 
 /**
  * Created by WaterMelon on 2017/11/8.
  */
 
 @Entity
-@Table(name = "CTFProblem")
+@Table(name = "ctf_problem")
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class CTFProblem {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private int id;
-    @Column
+
     private String title;
-    @Column
+
     private String data;
-    @Column
-    private String time;
-    @Column
-    private String userEmail;
-    @Column
+
+    private Date time;
+
+    @ManyToOne(targetEntity = User.class, cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private User author;
+
     private String flag;
-    @Column
+
     private String magnet;
-    @Column
-    private String UserName;
 
-    public CTFProblem() {
-    }
+    @OneToMany(mappedBy = "problem")
+    private List<CTFFlagGetter> getterList;
 
-    public CTFProblem(String title, String data, String time, String userEmail, String flag, String magnet) {
-        this.title = title;
-        this.data = data;
-        this.time = time;
-        this.userEmail = userEmail;
-        this.flag = flag;
-        this.magnet = magnet;
-    }
-
-    public String getUserName() {
-        return UserName;
-    }
-
-    public void setUserName(String userName) {
-        UserName = userName;
-    }
-
-    public String getMagnet() {
-        return magnet;
-    }
-
-    public void setMagnet(String magnet) {
-        this.magnet = magnet;
-    }
     public int getId() {
         return id;
     }
@@ -85,20 +59,12 @@ public class CTFProblem {
         this.data = data;
     }
 
-    public String getTime() {
+    public Date getTime() {
         return time;
     }
 
-    public void setTime(String time) {
+    public void setTime(Date time) {
         this.time = time;
-    }
-
-    public String getUserEmail() {
-        return userEmail;
-    }
-
-    public void setUserEmail(String userEmail) {
-        this.userEmail = userEmail;
     }
 
     public String getFlag() {
@@ -109,5 +75,28 @@ public class CTFProblem {
         this.flag = flag;
     }
 
+    public String getMagnet() {
+        return magnet;
+    }
+
+    public void setMagnet(String magnet) {
+        this.magnet = magnet;
+    }
+
+    public List<CTFFlagGetter> getGetterList() {
+        return getterList;
+    }
+
+    public void setGetterList(List<CTFFlagGetter> getterList) {
+        this.getterList = getterList;
+    }
+
+    public User getAuthor() {
+        return author;
+    }
+
+    public void setAuthor(User author) {
+        this.author = author;
+    }
 }
 

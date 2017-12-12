@@ -1,46 +1,34 @@
 package entity;
-import java.io.Serializable;
-import com.fasterxml.jackson.annotation.JsonInclude;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.Date;
 
 @Entity
-@Table(name = "CTFFlagGetter")
-
-@JsonInclude(JsonInclude.Include.NON_NULL)
-
-public class CTFFlagGetter implements Serializable{
+@Table(name = "ctf_flag_getter")
+public class CTFFlagGetter implements Serializable {
 
 
     @Id
-    @Column
-    private int problemID;
-    @Id
-    @Column
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private int id;
+
     private String userEmail;
 
-    @Column
-    private String time;
+    private Date time;
 
+    @JsonIgnore
+    @ManyToOne(targetEntity = CTFProblem.class, cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private CTFProblem problem;
 
-    public CTFFlagGetter(int problemID, String userEmail, String time) {
-        this.problemID = problemID;
-        this.userEmail = userEmail;
-        this.time = time;
-
+    public int getId() {
+        return id;
     }
 
-    public CTFFlagGetter() {
-
-    }
-
-    public int getProblemID() {
-        return problemID;
-    }
-
-    public void setProblemID(int problemID) {
-        this.problemID = problemID;
+    public void setId(int id) {
+        this.id = id;
     }
 
     public String getUserEmail() {
@@ -51,13 +39,19 @@ public class CTFFlagGetter implements Serializable{
         this.userEmail = userEmail;
     }
 
-    public String getTime() {
+    public Date getTime() {
         return time;
     }
 
-    public void setTime(String time) {
+    public void setTime(Date time) {
         this.time = time;
     }
 
+    public CTFProblem getProblem() {
+        return problem;
+    }
 
+    public void setProblem(CTFProblem problem) {
+        this.problem = problem;
+    }
 }

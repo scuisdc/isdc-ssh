@@ -2,15 +2,22 @@ package service.impl;
 
 import dao.CommentDAO;
 import dao.PostDAO;
+import dao.UserDAO;
+import dto.CommentResponse;
+import dto.PostPreviewResponse;
+import dto.PostResponse;
 import entity.Comment;
 import entity.Post;
+import entity.User;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import service.BlogService;
 
 import javax.transaction.Transactional;
+import java.util.Date;
 import java.util.List;
-import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * Copyright (c) 2017 Peter Mao. All rights reserved.
@@ -19,75 +26,126 @@ import java.util.Map;
 @Service("BlogService")
 @Transactional
 public class BlogServiceImpl implements BlogService {
-
-
     private final CommentDAO commentDAO;
     private final PostDAO postDAO;
+    private final UserDAO userDAO;
+    private final ModelMapper modelMapper;
 
     @Autowired
-    public BlogServiceImpl(CommentDAO commentDAO, PostDAO postDAO) {
+    public BlogServiceImpl(CommentDAO commentDAO, PostDAO postDAO, UserDAO userDAO, ModelMapper modelMapper) {
         this.commentDAO = commentDAO;
         this.postDAO = postDAO;
+        this.userDAO = userDAO;
+        this.modelMapper = modelMapper;
     }
 
     @Override
-    public List<Map> listPost(int page, int pageSize) {
-        return postDAO.getAllPost(page, pageSize);
+    public List<PostPreviewResponse> listPost() {
+        return postDAO.findAll().stream().map(p -> modelMapper.map(p, PostPreviewResponse.class)).collect(Collectors.toList());
     }
 
     @Override
-    public void newPost(Post post) {
-        postDAO.addPost(post);
+    public PostPreviewResponse getPostById(int postId) {
+        Post one = postDAO.findOne(postId);
+        if (one != null) {
+            return modelMapper.map(one, PostPreviewResponse.class);
+        } else {
+            return null;
+        }
     }
 
     @Override
-    public Map getPostById(int postId) {
-        return postDAO.getPostById(postId);
-    }
+    public PostResponse getFullPostById(int postId) {
+        Post one = postDAO.findOne(postId);
+        if (one != null) {
+            return modelMapper.map(one, PostResponse.class);
+        } else {
+            return null;
+        }
 
-    @Override
-    public Post getFullPostById(int postId) {
-        return postDAO.getFullPostById(postId);
-    }
-
-    @Override
-    public List<Map> getPostByUserAccessToken(String accessToken) {
-        return postDAO.getPostByUserAccessToken(accessToken);
-    }
-
-    @Override
-    public List<Map> getPostByUserName(String userName) {
-        return postDAO.getPostByUserName(userName);
-    }
-
-    @Override
-    public boolean deletePost(int postId) {
-        return postDAO.delPost(postId);
-    }
-
-    @Override
-    public List<Map> getCommentByPost(int postId) {
-        return commentDAO.getCommentByPost(postId);
     }
 
 
     @Override
-    public void newComment(Comment comment) {
-        commentDAO.addComment(comment);
+    public List<PostPreviewResponse> getPostsByEmail(String email) {
+        return postDAO.getPostByEmail(email).stream().map(p -> modelMapper.map(p, PostPreviewResponse.class)).collect(Collectors.toList());
     }
 
     @Override
-    public boolean deleteComment(int commentId) {
-        return commentDAO.delComment(commentId);
+    public boolean delete(Integer userId, Integer postId) {
+        Post one = postDAO.findOne(postId);
+        if (one.getAuthor().getId().equals(userId)) {
+            postDAO.delete(one);
+            return true;
+        }
+        return false;
+    }
+
+    @Override
+    public List<CommentResponse> getCommentByPost(int postId) {
+        return commentDAO.getCommentByPost(postId).stream().map(c -> modelMapper.map(c, CommentResponse.class)).collect(Collectors.toList());
+    }
+
+    @Override
+    public boolean deleteComment(Integer userId, Integer postId, Integer commentId) {
+        Comment comment = commentDAO.findOne(commentId);
+        Post post = postDAO.findOne(postId);
+        if (comment != null && comment.getSender().getId().equals(userId) || post != null && post.getAuthor().getId().equals(userId)) {
+            commentDAO.delete(comment);
+            return true;
+        }
+        return false;
     }
 
     @Override
     public void updatePost(Post post) {
-        postDAO.updatePost(post);
+        postDAO.update(post);
     }
 
     @Override
-    public Comment getCommentById(int commentId) {
-        return commentDAO.getCommentById(commentId);
+    public CommentResponse getCommentById(int commentId) {
+        return modelMapper.map(commentDAO.findOne(commentId), CommentResponse.class);
+    }
+
+    @Override
+    public void save(String email, String preview, String content, String title, Date created, Date lastModified) {
+        Post post = new Post();
+        post.setContent(content);
+        post.setLastModified(lastModified);
+        post.setPreview(preview);
+        post.setCreateDate(created);
+        post.setAuthor(userDAO.getUserByEmail(email));
+        post.setTitle(title);
+        postDAO.save(post);
+    }
+
+    @Override
+    public boolean updatePost(Integer userId, Integer postId, String content, String preview, String title, Date lastModified) {
+        Post post = postDAO.findOne(postId);
+        if (post != null && post.getAuthor().getId().equals(userId)) {
+            post.setContent(content);
+            post.setPreview(preview);
+            post.setTitle(title);
+            post.setLastModified(lastModified);
+            updatePost(post);
+            return true;
+        }
+        return false;
+    }
+
+    @Override
+    public void newComment(User user, int postId, Date commentDate, String content) {
+        Comment comment = new Comment();
+        comment.setCommentDate(commentDate);
+        comment.setContent(content);
+        comment.setSender(user);
+        comment.setPost(postDAO.findOne(postId));
+        commentDAO.save(comment);
+    }
+
+    @Override
+    public List<PostPreviewResponse> getPostsByUserName(String userName) {
+        User user = userDAO.getUserByName(userName);
+        return postDAO.getPostByEmail(user.getEmail()).stream().map(p -> modelMapper.map(p, PostPreviewResponse.class)).collect(Collectors.toList());
     }
 }

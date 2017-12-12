@@ -18,7 +18,7 @@ public interface SemesterService {
 
     void updateSemester(Semester semester);
 
-    boolean deleteSemester(Semester semester);
+    void deleteSemester(Semester semester);
 
     Semester findSemesterByDate(Date date);
 }

@@ -3,12 +3,19 @@ package controller;
 import dto.LoginRequest;
 import dto.Response;
 import dto.SignUpRequest;
+import dto.UserResponse;
 import entity.User;
 import org.apache.commons.lang3.RandomStringUtils;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
 import service.UserService;
-import utils.VerifyCodeUtils;
+import support.Authorization;
+import support.CurrentUser;
+import support.VerifyCodeUtils;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -22,10 +29,12 @@ import java.io.IOException;
 @RequestMapping("user/")
 public class UserController {
     private final UserService userService;
+    private final ModelMapper modelMapper;
 
     @Autowired
-    public UserController(UserService userService) {
+    public UserController(UserService userService, ModelMapper modelMapper) {
         this.userService = userService;
+        this.modelMapper = modelMapper;
     }
 
     @RequestMapping(value = "register", method = RequestMethod.POST)
@@ -47,10 +56,10 @@ public class UserController {
     }
 
     @RequestMapping(value = "auth", method = RequestMethod.POST)
-    public Response login(@RequestBody LoginRequest request, HttpSession session, HttpServletResponse response) {
+    public Response login(@RequestBody LoginRequest request, HttpSession session) {
         if (session.getAttribute("_code") != null && session.getAttribute("_code").equals(request.getCheckCode())) {
 
-            User user = userService.login(request.getEmail(), request.getPassword());
+            UserResponse user = userService.login(request.getEmail(), request.getPassword());
             if (user != null) {
                 return new Response<>(200, user);
             }
@@ -61,12 +70,9 @@ public class UserController {
     }
 
     @RequestMapping(value = "auth", method = RequestMethod.GET)
-    public Response login(@CookieValue("accessToken") String accessToken, HttpServletResponse response) {
-        User user = userService.auth(accessToken);
-        if (user != null) {
-            return new Response<>(200, user);
-        }
-        return new Response<>(500, "登录已过期，请重新登录");
+    @Authorization
+    public Response login(@CurrentUser User user) {
+        return new Response<>(200, modelMapper.map(user, UserResponse.class));
     }
 
 

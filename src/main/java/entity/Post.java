@@ -1,6 +1,5 @@
 package entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 
 import javax.persistence.*;
@@ -39,38 +38,17 @@ public class Post {
     @JoinColumn(name = "user_id")
     private User author;
 
-    @JsonIgnore
     @Column(name = "active")
     private Boolean active;
 
     @Column(name = "preview")
     private String preview;
 
-    @JsonIgnore
-    @ManyToMany(targetEntity = Category.class, cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @ManyToMany(targetEntity = Category.class, fetch = FetchType.EAGER)
     private List<Category> categories;
 
-    @JsonIgnore
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "post")
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "post")
     private List<Comment> comments;
-
-
-    public Post(String title, Date createDate, Date lastModified, String preview, List<Category> categories) {
-        this.title = title;
-        this.createDate = createDate;
-        this.lastModified = lastModified;
-//        this.author = new User(user.getUserName(), user.getEmail());
-        this.preview = preview;
-        this.categories = categories;
-
-    }
-
-    public Post() {
-    }
-
-    public Post(String content) {
-        this.content = content;
-    }
 
     public Integer getId() {
         return id;

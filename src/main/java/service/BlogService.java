@@ -1,37 +1,42 @@
 package service;
 
-import entity.Comment;
+import dto.CommentResponse;
+import dto.PostPreviewResponse;
+import dto.PostResponse;
 import entity.Post;
+import entity.User;
 
+import java.util.Date;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Copyright (c) 2017 Peter Mao. All rights reserved.
  * Created by mao on 17-7-25.
  */
 public interface BlogService {
-    List<Map> listPost(int page, int pageSize);
+    List<PostPreviewResponse> listPost();
 
-    void newPost(Post post);
+    PostPreviewResponse getPostById(int postId);
 
-    Map getPostById(int postId);
+    PostResponse getFullPostById(int postId);
 
-    Post getFullPostById(int postId);
+    List<PostPreviewResponse> getPostsByEmail(String userName);
 
-    List<Map> getPostByUserAccessToken(String accessToken);
+    boolean delete(Integer userId, Integer postId);
 
-    List<Map> getPostByUserName(String userName);
+    List<CommentResponse> getCommentByPost(int postId);
 
-    boolean deletePost(int postId);
-
-    List<Map> getCommentByPost(int postId);
-
-    void newComment(Comment comment);
-
-    boolean deleteComment(int commentId);
+    boolean deleteComment(Integer userId, Integer postId, Integer commentId);
 
     void updatePost(Post post);
 
-    Comment getCommentById(int commentId);
+    CommentResponse getCommentById(int commentId);
+
+    void save(String email, String preview, String content, String title, Date created, Date lastModified);
+
+    boolean updatePost(Integer userId, Integer postId, String content, String preview, String title, Date lastModified);
+
+    void newComment(User user, int postId, Date commentDate, String content);
+
+    List<PostPreviewResponse> getPostsByUserName(String userName);
 }

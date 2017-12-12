@@ -48,7 +48,7 @@ public class JWCServiceImpl implements JWCService {
 
     @Override
     public void addRequest(ScoreRequest request) {
-        scoreRequestDAO.addRequest(request);
+        scoreRequestDAO.save(request);
     }
 
     @Async
@@ -96,7 +96,7 @@ public class JWCServiceImpl implements JWCService {
             e.printStackTrace();
         }
         request.setComplete(true);
-        scoreRequestDAO.updateRequest(request);
+        scoreRequestDAO.update(request);
     }
 
     private String parseScorePage(String page) throws JsonProcessingException {

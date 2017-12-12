@@ -15,7 +15,7 @@ import java.util.Date;
 @Table(name = "service_jwc_score")
 public class ScoreRequest {
 
-    @JsonIgnore
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id;

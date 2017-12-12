@@ -25,27 +25,22 @@ public class BannerServiceImpl implements BannerService {
     }
 
     @Override
-    public List<Banner> listAll() {
-        return bannerDAO.listAllBanner();
+    public List<Banner> findAll() {
+        return bannerDAO.findAll();
     }
 
     @Override
-    public void addBanner(Banner banner) {
-        bannerDAO.addBanner(banner);
+    public void save(Banner banner) {
+        bannerDAO.save(banner);
     }
 
     @Override
-    public void updateBanner(Banner banner) {
-        bannerDAO.updateBanner(banner);
+    public void update(Banner banner) {
+        bannerDAO.update(banner);
     }
 
     @Override
-    public boolean deleteBanner(Banner banner) {
-        return bannerDAO.deleteBanner(banner);
-    }
-
-    @Override
-    public Banner findBannerByTitle(String title) {
-        return bannerDAO.findBannerByTitle(title);
+    public void delete(Banner banner) {
+        bannerDAO.delete(banner);
     }
 }

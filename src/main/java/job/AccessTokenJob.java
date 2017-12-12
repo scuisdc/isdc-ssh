@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
+import support.TokenAuthenticationService;
 import weixin.popular.api.TokenAPI;
 
 /**
@@ -24,6 +25,7 @@ public class AccessTokenJob {
         this.appId = appId;
         this.appSecret = appSecret;
         refreshToken();
+        TokenAuthenticationService.setSECRET(appSecret);
     }
 
     @Scheduled(cron = "0 0 * * * *")

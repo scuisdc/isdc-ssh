@@ -1,5 +1,6 @@
 package service;
 
+import dto.UserResponse;
 import entity.User;
 
 import java.util.List;
@@ -12,9 +13,9 @@ public interface UserService {
 
     boolean signUp(User user);
 
-    List<User> listAll();
+    List<UserResponse> listAll();
 
-    User login(String email, String password);
+    UserResponse login(String email, String password);
 
-    User auth(String accessToken);
+    UserResponse auth(String accessToken);
 }
