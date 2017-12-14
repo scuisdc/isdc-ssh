@@ -2,11 +2,15 @@ package controller;
 
 import dto.Response;
 import entity.Mail;
+import entity.Mailbox;
 import entity.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import service.MailService;
 import support.Authorization;
 import support.CurrentUser;
+
+import java.util.ArrayList;
 
 /**
  * Copyright (c) 2017 Peter Mao). All rights reserved.
@@ -16,21 +20,26 @@ import support.CurrentUser;
 @RequestMapping("mail/")
 public class MailController {
 
+    private final MailService mailService;
+
     @Autowired
-    public MailController() {
+    public MailController(MailService mailService) {
+        this.mailService = mailService;
     }
 
 
     @GetMapping(value = "")
     @Authorization
     public Response listAccount(@CurrentUser User user) {
-        return new Response<>(200);
+        return new Response<>(200, mailService.listAccount(user));
     }
 
     @PutMapping(value = "")
     @Authorization
-    public Response addAccount(@CurrentUser User user) {
-        return new Response<>(200);
+    public Response addAccount(@CurrentUser User user, @RequestBody Mailbox mailbox) {
+        mailbox.setUser(user);
+        mailbox.setFolders(new ArrayList<>());
+        return new Response<>(mailService.addAccount(mailbox) ? 200 : 500);
     }
 
     @PostMapping(value = "{boxId}")
@@ -48,7 +57,7 @@ public class MailController {
     @GetMapping(value = "{boxId}")
     @Authorization
     public Response listFolderInBox(@PathVariable("boxId") Integer boxId, @CurrentUser User user) {
-        return new Response<>(200);
+        return new Response<>(200, mailService.listFolder(boxId));
     }
 
     @GetMapping(value = "{boxId}/{folderId}")

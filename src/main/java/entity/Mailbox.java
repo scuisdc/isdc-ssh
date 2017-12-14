@@ -25,14 +25,15 @@ public class Mailbox {
 
     private Integer pop3Port;
 
+    @Column(unique = true)
     private String account;
 
     private String password;
 
     private String alias;
 
-    @OneToMany(mappedBy = "mailbox")
-    private List<Mail> mailList;
+    @OneToMany(mappedBy = "mailbox", cascade = CascadeType.ALL)
+    private List<MailFolder> folders;
 
     public Integer getId() {
         return id;
@@ -90,14 +91,6 @@ public class Mailbox {
         this.alias = alias;
     }
 
-    public List<Mail> getMailList() {
-        return mailList;
-    }
-
-    public void setMailList(List<Mail> mailList) {
-        this.mailList = mailList;
-    }
-
     public Integer getPop3Port() {
         return pop3Port;
     }
@@ -112,5 +105,13 @@ public class Mailbox {
 
     public void setSmtpPort(Integer smtpPort) {
         this.smtpPort = smtpPort;
+    }
+
+    public List<MailFolder> getFolders() {
+        return folders;
+    }
+
+    public void setFolders(List<MailFolder> folders) {
+        this.folders = folders;
     }
 }

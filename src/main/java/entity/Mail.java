@@ -3,6 +3,8 @@ package entity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
+import java.util.Date;
+import java.util.List;
 
 @Entity
 @Table(name = "mail")
@@ -11,17 +13,28 @@ public class Mail {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id;
 
-    private String title;
+    private String subject;
 
-    private String sender;
+    @Column(name = "sender")
+    private String from;
 
-    private String content;
+    @Column(columnDefinition = "longtext")
+    private String textBody;
 
-    private String receiver;
+    @Column(columnDefinition = "longtext")
+    private String htmlBody;
 
-    @JsonIgnore
-    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY, targetEntity = Mailbox.class)
-    private Mailbox mailbox;
+    @Column(name = "receiver")
+    private String to;
+
+    private String contentType;
+
+    @OneToMany(targetEntity = MailAttachment.class, cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<MailAttachment> attachments;
+
+
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date sendDate;
 
     @JsonIgnore
     @ManyToOne(cascade = {CascadeType.REFRESH, CascadeType.PERSIST, CascadeType.MERGE})
@@ -35,44 +48,28 @@ public class Mail {
         this.id = id;
     }
 
-    public String getTitle() {
-        return title;
+    public String getSubject() {
+        return subject;
     }
 
-    public void setTitle(String title) {
-        this.title = title;
+    public void setSubject(String subject) {
+        this.subject = subject;
     }
 
-    public String getSender() {
-        return sender;
+    public String getFrom() {
+        return from;
     }
 
-    public void setSender(String sender) {
-        this.sender = sender;
+    public void setFrom(String from) {
+        this.from = from;
     }
 
-    public String getContent() {
-        return content;
+    public String getTo() {
+        return to;
     }
 
-    public void setContent(String content) {
-        this.content = content;
-    }
-
-    public String getReceiver() {
-        return receiver;
-    }
-
-    public void setReceiver(String receiver) {
-        this.receiver = receiver;
-    }
-
-    public Mailbox getMailbox() {
-        return mailbox;
-    }
-
-    public void setMailbox(Mailbox mailbox) {
-        this.mailbox = mailbox;
+    public void setTo(String to) {
+        this.to = to;
     }
 
     public MailFolder getMailFolder() {
@@ -81,5 +78,45 @@ public class Mail {
 
     public void setMailFolder(MailFolder mailFolder) {
         this.mailFolder = mailFolder;
+    }
+
+    public Date getSendDate() {
+        return sendDate;
+    }
+
+    public void setSendDate(Date sendDate) {
+        this.sendDate = sendDate;
+    }
+
+    public void setContentType(String contentType) {
+        this.contentType = contentType;
+    }
+
+    public String getContentType() {
+        return contentType;
+    }
+
+    public String getTextBody() {
+        return textBody;
+    }
+
+    public void setTextBody(String textBody) {
+        this.textBody = textBody;
+    }
+
+    public String getHtmlBody() {
+        return htmlBody;
+    }
+
+    public void setHtmlBody(String htmlBody) {
+        this.htmlBody = htmlBody;
+    }
+
+    public List<MailAttachment> getAttachments() {
+        return attachments;
+    }
+
+    public void setAttachments(List<MailAttachment> attachments) {
+        this.attachments = attachments;
     }
 }

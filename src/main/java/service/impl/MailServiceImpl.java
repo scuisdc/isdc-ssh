@@ -1,46 +1,66 @@
 package service.impl;
 
-import entity.Mail;
+import dao.MailDAO;
+import dao.MailFolderDAO;
+import dao.MailboxDAO;
+import dto.FolderResponse;
+import dto.MailboxResponse;
+import entity.MailFolder;
 import entity.Mailbox;
-import org.springframework.mail.javamail.JavaMailSenderImpl;
-import org.springframework.mail.javamail.MimeMessageHelper;
+import entity.User;
+import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import service.MailService;
+import support.MailUtils;
 
-import javax.mail.internet.MimeMessage;
+import javax.mail.MessagingException;
 import javax.transaction.Transactional;
-import java.util.Properties;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service("MailService")
 @Transactional
 public class MailServiceImpl implements MailService {
-    @Override
-    public void sendMail(Mailbox mailbox, Mail mail) {
-        JavaMailSenderImpl sender = new JavaMailSenderImpl();
 
-        sender.setHost(mailbox.getSmtpServer());
-        sender.setPort(mailbox.getSmtpPort());
-        sender.setUsername(mailbox.getAccount());
-        sender.setPassword(mailbox.getPassword()); // 这里要用邀请码，不是你登录邮箱的密码
+    private final MailDAO mailDAO;
+    private final ModelMapper modelMapper;
+    private final MailboxDAO mailboxDAO;
+    private final MailFolderDAO mailFolderDao;
 
-        Properties pro = System.getProperties(); // 下面各项缺一不可
-        pro.put("mail.smtp.auth", "true");
-        pro.put("mail.smtp.ssl.enable", "true");
-        pro.put("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory");
-
-        sender.setJavaMailProperties(pro);
-
-        MimeMessage message = sender.createMimeMessage();
-        try {
-            MimeMessageHelper helper = new MimeMessageHelper(message, true);
-            helper.setFrom(mailbox.getAccount()); // 发送人
-            helper.setTo(mail.getReceiver()); // 收件人
-            helper.setSubject(mail.getTitle()); // 标题
-            helper.setText(mail.getContent()); // 内容
-            sender.send(message);
-            System.out.println("发送完毕！");
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+    @Autowired
+    public MailServiceImpl(MailDAO mailDAO, ModelMapper modelMapper, MailboxDAO mailboxDAO, MailFolderDAO mailFolderDao) {
+        this.mailDAO = mailDAO;
+        this.modelMapper = modelMapper;
+        this.mailboxDAO = mailboxDAO;
+        this.mailFolderDao = mailFolderDao;
     }
+
+    @Override
+    public boolean addAccount(Mailbox mailbox) {
+        try {
+            MailFolder inbox = new MailFolder();
+            inbox.setAlias("shoujianxiang");
+            inbox.setFolderType(MailFolder.FolderType.INBOX);
+            inbox.setMailbox(mailbox);
+            inbox.setMailList(MailUtils.readMails(mailbox, inbox));
+            mailbox.getFolders().add(inbox);
+            mailboxDAO.save(mailbox);
+        } catch (MessagingException e) {
+            e.printStackTrace();
+            return false;
+        }
+        return true;
+    }
+
+    @Override
+    public List<MailboxResponse> listAccount(User user) {
+        return mailboxDAO.findByUser(user.getId()).stream().map(mail -> modelMapper.map(mail, MailboxResponse.class)).collect(Collectors.toList());
+    }
+
+    @Override
+    public List<FolderResponse> listFolder(Integer boxId) {
+        return mailboxDAO.findOne(boxId).getFolders().stream().map(f -> modelMapper.map(f, FolderResponse.class)).collect(Collectors.toList());
+    }
+
 }

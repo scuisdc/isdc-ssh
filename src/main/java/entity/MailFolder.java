@@ -13,18 +13,18 @@ public class MailFolder {
     private Integer id;
 
     @JsonIgnore
-    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY, targetEntity = Mailbox.class)
+    @ManyToOne(fetch = FetchType.LAZY, targetEntity = Mailbox.class)
     private Mailbox mailbox;
 
     private String alias;
 
     private FolderType folderType;
 
-    @OneToMany(mappedBy = "mailFolder")
+    @OneToMany(mappedBy = "mailFolder", cascade = CascadeType.ALL)
     private List<Mail> mailList;
 
-    enum FolderType {
-        InBox, Junk, Trash, Sent
+    public enum FolderType {
+        INBOX, JUNK, TRASH, SENT
     }
 
     public Integer getId() {

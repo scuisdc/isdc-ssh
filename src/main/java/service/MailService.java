@@ -1,8 +1,17 @@
 package service;
 
-import entity.Mail;
+import dto.FolderResponse;
+import dto.MailboxResponse;
 import entity.Mailbox;
+import entity.User;
+
+import java.util.List;
 
 public interface MailService {
-    void sendMail(Mailbox mailbox, Mail mail);
+
+    boolean addAccount(Mailbox mailbox);
+
+    List<MailboxResponse> listAccount(User user);
+
+    List<FolderResponse> listFolder(Integer boxId);
 }
