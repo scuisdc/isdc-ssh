@@ -70,7 +70,7 @@ public class MailController {
     @GetMapping(value = "{boxId}/{folderId}")
     @Authorization
     public Response listMailsInFolder(@PathVariable("boxId") Integer boxId, @PathVariable("folderId") Integer folderId, @CurrentUser User user) {
-        return new Response<>(200);
+        return new Response<>(200, mailService.readMails(boxId, folderId, user));
     }
 
 

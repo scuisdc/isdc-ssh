@@ -4,6 +4,7 @@ import dao.MailDAO;
 import dao.MailFolderDAO;
 import dao.MailboxDAO;
 import dto.FolderResponse;
+import dto.MailPreviewResponse;
 import dto.MailboxResponse;
 import entity.MailFolder;
 import entity.Mailbox;
@@ -17,6 +18,7 @@ import support.MailUtils;
 import javax.mail.MessagingException;
 import javax.transaction.Transactional;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service("MailService")
@@ -95,6 +97,28 @@ public class MailServiceImpl implements MailService {
     public boolean deleteAccounts(List<Integer> boxIds, User user) {
         boxIds.stream().map(mailboxDAO::findOne).filter(box -> box.getUser().getId().equals(user.getId())).forEach(mailboxDAO::delete);
         return true;
+    }
+
+    @Override
+    public List<MailPreviewResponse> readMails(Integer boxId, Integer folderId, User user) {
+        try {
+            Mailbox account = mailboxDAO.findOne(boxId);
+            if (account != null && account.getUser().getId().equals(user.getId())) {
+                Optional<MailFolder> first = account.getFolders().stream().filter(f -> f.getId().equals(folderId)).findFirst();
+                if (!first.isPresent()) {
+                    return null;
+                }
+                MailFolder folder = first.get();
+                folder.setMailList(MailUtils.readMails(account, folder));
+                mailboxDAO.save(account);
+                return folder.getMailList().stream().map(mail -> modelMapper.map(mail, MailPreviewResponse.class)).collect(Collectors.toList());
+            } else {
+                return null;
+            }
+        } catch (MessagingException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 
 }

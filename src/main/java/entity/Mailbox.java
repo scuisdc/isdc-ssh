@@ -14,7 +14,7 @@ public class Mailbox {
     private Integer id;
 
     @JsonIgnore
-    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY, targetEntity = User.class)
+    @ManyToOne(fetch = FetchType.LAZY, targetEntity = User.class)
     private User user;
 
     private String smtpServer;
