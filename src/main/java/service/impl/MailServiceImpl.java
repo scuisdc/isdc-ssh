@@ -6,6 +6,7 @@ import dao.MailboxDAO;
 import dto.FolderResponse;
 import dto.MailPreviewResponse;
 import dto.MailboxResponse;
+import entity.Mail;
 import entity.MailFolder;
 import entity.Mailbox;
 import entity.User;
@@ -17,6 +18,7 @@ import support.MailUtils;
 
 import javax.mail.MessagingException;
 import javax.transaction.Transactional;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -124,6 +126,34 @@ public class MailServiceImpl implements MailService {
             e.printStackTrace();
             return null;
         }
+    }
+
+    @Override
+    public boolean sendMail(Integer boxId, User user, Mail mail) {
+        Mailbox account = mailboxDAO.findOne(boxId);
+        if (account != null && account.getUser().getId().equals(user.getId())) {
+            MailFolder sent;
+            Optional<MailFolder> first = account.getFolders().stream().filter(f -> f.getFolderType().equals(MailFolder.FolderType.SENT)).findFirst();
+            if (first.isPresent()) {
+                sent = first.get();
+            } else {
+                sent = new MailFolder();
+                sent.setMailbox(account);
+                sent.setMailList(new ArrayList<>());
+                sent.setFolderType(MailFolder.FolderType.SENT);
+                sent.setAlias("SENT");
+            }
+            try {
+                MailUtils.sendMail(account, mail);
+            } catch (MessagingException e) {
+                e.printStackTrace();
+                return false;
+            }
+            sent.getMailList().add(mail);
+            mailFolderDao.update(sent);
+            return true;
+        }
+        return false;
     }
 
 }

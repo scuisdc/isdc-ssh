@@ -3,6 +3,7 @@ package service;
 import dto.FolderResponse;
 import dto.MailPreviewResponse;
 import dto.MailboxResponse;
+import entity.Mail;
 import entity.Mailbox;
 import entity.User;
 
@@ -23,4 +24,6 @@ public interface MailService {
     boolean deleteAccounts(List<Integer> boxIds, User user);
 
     List<MailPreviewResponse> readMails(Integer boxId, Integer folderId, User user);
+
+    boolean sendMail(Integer boxId, User user, Mail mail);
 }

@@ -40,7 +40,7 @@ public class MailUtils {
         return (String) part.getContent();
     }
 
-    public static void sendMail(Mailbox mailbox, Mail mail) {
+    public static void sendMail(Mailbox mailbox, Mail mail) throws MessagingException {
         JavaMailSenderImpl sender = new JavaMailSenderImpl();
         sender.setHost(mailbox.getSmtpServer());
         sender.setPort(mailbox.getSmtpPort());
@@ -54,16 +54,14 @@ public class MailUtils {
         sender.setJavaMailProperties(pro);
 
         MimeMessage message = sender.createMimeMessage();
-        try {
-            MimeMessageHelper helper = new MimeMessageHelper(message, true);
-            helper.setFrom(mailbox.getAccount());
-            helper.setTo(mail.getTo());
-            helper.setSubject(mail.getSubject());
-            helper.setText(mail.getTextBody() == null ? mail.getHtmlBody() : mail.getTextBody(), mail.getTextBody() == null);
-            sender.send(message);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+
+        MimeMessageHelper helper = new MimeMessageHelper(message, true);
+        helper.setFrom(mailbox.getAccount());
+        helper.setTo(mail.getTo().split(","));
+        helper.setSubject(mail.getSubject());
+        helper.setText(mail.getTextBody() == null ? mail.getHtmlBody() : mail.getTextBody(), mail.getTextBody() == null);
+        sender.send(message);
+
     }
 
     public static List<Mail> readMails(Mailbox mailbox, MailFolder mailFolder) throws MessagingException {

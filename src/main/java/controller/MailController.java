@@ -41,32 +41,32 @@ public class MailController {
     public Response addAccount(@CurrentUser User user, @RequestBody Mailbox mailbox) {
         mailbox.setUser(user);
         mailbox.setFolders(new ArrayList<>());
-        return new Response<>(mailService.addAccount(mailbox) ? 200 : 500);
+        return new Response<>(mailService.addAccount(mailbox) ? 200 : -1);
     }
 
     @PostMapping(value = "{boxId}")
     @Authorization
     public Response updateAccount(@PathVariable("boxId") Integer boxId, @CurrentUser User user, @RequestBody Mailbox mailbox) {
-        return new Response<>(mailService.updateAccount(mailbox, boxId, user) ? 200 : 500);
+        return new Response<>(mailService.updateAccount(mailbox, boxId, user) ? 200 : -1);
     }
 
     @DeleteMapping(value = "{boxId}")
     @Authorization
     public Response deleteAccount(@PathVariable("boxId") Integer boxId, @CurrentUser User user) {
-        return new Response<>(mailService.deleteAccount(boxId, user) ? 200 : 500);
+        return new Response<>(mailService.deleteAccount(boxId, user) ? 200 : -1);
     }
 
     @PostMapping(value = "delete")
     @Authorization
     public Response deleteAccounts(@RequestBody List<Integer> boxIds, @CurrentUser User user) {
-        return new Response<>(mailService.deleteAccounts(boxIds, user) ? 200 : 500);
+        return new Response<>(mailService.deleteAccounts(boxIds, user) ? 200 : -1);
     }
 
     @GetMapping(value = "{boxId}")
     @Authorization
     public Response listFolderInBox(@PathVariable("boxId") Integer boxId, @CurrentUser User user) {
         List<FolderResponse> folderResponses = mailService.listFolder(boxId, user);
-        return new Response<>(folderResponses != null ? 200 : 500, folderResponses);
+        return new Response<>(folderResponses != null ? 200 : -1, folderResponses);
     }
 
     @GetMapping(value = "{boxId}/{folderId}")
@@ -86,7 +86,8 @@ public class MailController {
     @PutMapping(value = "{boxId}")
     @Authorization
     public Response sendMail(@PathVariable("boxId") Integer boxId, @CurrentUser User user, @RequestBody Mail mail) {
-        return new Response<>(200);
+
+        return new Response<>(mailService.sendMail(boxId, user, mail) ? 200 : -1);
     }
 
 
