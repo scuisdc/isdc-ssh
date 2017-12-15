@@ -11,6 +11,7 @@ import support.Authorization;
 import support.CurrentUser;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Copyright (c) 2017 Peter Mao). All rights reserved.
@@ -44,14 +45,20 @@ public class MailController {
 
     @PostMapping(value = "{boxId}")
     @Authorization
-    public Response updateAccount(@PathVariable("boxId") Integer boxId, @CurrentUser User user) {
-        return new Response<>(200);
+    public Response updateAccount(@PathVariable("boxId") Integer boxId, @CurrentUser User user, @RequestBody Mailbox mailbox) {
+        return new Response<>(mailService.updateAccount(mailbox, boxId, user) ? 200 : 500);
     }
 
     @DeleteMapping(value = "{boxId}")
     @Authorization
     public Response deleteAccount(@PathVariable("boxId") Integer boxId, @CurrentUser User user) {
-        return new Response<>(200);
+        return new Response<>(mailService.deleteAccount(boxId, user) ? 200 : 500);
+    }
+
+    @DeleteMapping(value = "")
+    @Authorization
+    public Response deleteAccounts(@RequestBody List<Integer> boxIds, @CurrentUser User user) {
+        return new Response<>(mailService.deleteAccounts(boxIds, user) ? 200 : 500);
     }
 
     @GetMapping(value = "{boxId}")

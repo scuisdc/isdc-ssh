@@ -20,15 +20,19 @@ public class AuthorizationInterceptor extends HandlerInterceptorAdapter {
         }
         HandlerMethod handlerMethod = (HandlerMethod) handler;
         if (handlerMethod.getMethod().getAnnotation(Authorization.class) != null) {
-            Optional<Integer> userId = TokenAuthenticationService.getAuthentication(request);
-            if (userId.isPresent()) {
-                request.setAttribute(Constants.HEADER_USER_ID, userId.get());
-                return true;
-            } else {
-                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            try {
+                Optional<Integer> userId = TokenAuthenticationService.getAuthentication(request);
+                if (userId.isPresent()) {
+                    request.setAttribute(Constants.HEADER_USER_ID, userId.get());
+                    return true;
+                } else {
+                    response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                }
+            } catch (IllegalArgumentException ignored) {
             }
             return false;
+        } else {
+            return true;
         }
-        return true;
     }
 }

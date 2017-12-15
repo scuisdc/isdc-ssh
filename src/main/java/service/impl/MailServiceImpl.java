@@ -63,4 +63,38 @@ public class MailServiceImpl implements MailService {
         return mailboxDAO.findOne(boxId).getFolders().stream().map(f -> modelMapper.map(f, FolderResponse.class)).collect(Collectors.toList());
     }
 
+    @Override
+    public boolean updateAccount(Mailbox mailbox, int boxId, User user) {
+        Mailbox target = mailboxDAO.findOne(boxId);
+        if (target != null && target.getUser().getId().equals(user.getId())) {
+            target.setAlias(mailbox.getAlias());
+            target.setPassword(mailbox.getPassword());
+            target.setPop3Port(mailbox.getPop3Port());
+            target.setPop3Server(mailbox.getPop3Server());
+            target.setSmtpPort(mailbox.getSmtpPort());
+            target.setSmtpServer(mailbox.getSmtpServer());
+            mailboxDAO.update(target);
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    @Override
+    public boolean deleteAccount(Integer boxId, User user) {
+        Mailbox target = mailboxDAO.findOne(boxId);
+        if (target != null && target.getUser().getId().equals(user.getId())) {
+            mailboxDAO.delete(target);
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    @Override
+    public boolean deleteAccounts(List<Integer> boxIds, User user) {
+        boxIds.stream().map(mailboxDAO::findOne).filter(box -> box.getUser().getId().equals(user.getId())).forEach(mailboxDAO::delete);
+        return true;
+    }
+
 }

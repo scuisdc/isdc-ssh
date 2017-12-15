@@ -134,9 +134,8 @@ public class MailUtils {
         Authenticator auth = new Authenticator() {
             @Override
             protected PasswordAuthentication getPasswordAuthentication() {
+                System.out.println(mailbox.getAccount() + "-------------------" + mailbox.getPassword());
                 return new PasswordAuthentication(mailbox.getAccount(), mailbox.getPassword());
-                //fwajedvovvsndddd
-                //vEujkWzyK658
             }
         };
 
