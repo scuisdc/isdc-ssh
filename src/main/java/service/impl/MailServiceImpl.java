@@ -61,8 +61,12 @@ public class MailServiceImpl implements MailService {
     }
 
     @Override
-    public List<FolderResponse> listFolder(Integer boxId) {
-        return mailboxDAO.findOne(boxId).getFolders().stream().map(f -> modelMapper.map(f, FolderResponse.class)).collect(Collectors.toList());
+    public List<FolderResponse> listFolder(Integer boxId, User user) {
+        Mailbox account = mailboxDAO.findOne(boxId);
+        if (account != null && account.getUser().getId().equals(user.getId())) {
+            return account.getFolders().stream().map(f -> modelMapper.map(f, FolderResponse.class)).collect(Collectors.toList());
+        }
+        return null;
     }
 
     @Override
@@ -109,7 +113,8 @@ public class MailServiceImpl implements MailService {
                     return null;
                 }
                 MailFolder folder = first.get();
-                folder.setMailList(MailUtils.readMails(account, folder));
+                folder.getMailList().clear();
+                folder.getMailList().addAll(MailUtils.readMails(account, folder));
                 mailboxDAO.save(account);
                 return folder.getMailList().stream().map(mail -> modelMapper.map(mail, MailPreviewResponse.class)).collect(Collectors.toList());
             } else {

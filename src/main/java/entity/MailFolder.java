@@ -20,7 +20,7 @@ public class MailFolder {
 
     private FolderType folderType;
 
-    @OneToMany(mappedBy = "mailFolder", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "mailFolder", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Mail> mailList;
 
     public enum FolderType {

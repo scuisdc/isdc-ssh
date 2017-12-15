@@ -1,5 +1,6 @@
 package controller;
 
+import dto.FolderResponse;
 import dto.Response;
 import entity.Mail;
 import entity.Mailbox;
@@ -64,7 +65,8 @@ public class MailController {
     @GetMapping(value = "{boxId}")
     @Authorization
     public Response listFolderInBox(@PathVariable("boxId") Integer boxId, @CurrentUser User user) {
-        return new Response<>(200, mailService.listFolder(boxId));
+        List<FolderResponse> folderResponses = mailService.listFolder(boxId, user);
+        return new Response<>(folderResponses != null ? 200 : 500, folderResponses);
     }
 
     @GetMapping(value = "{boxId}/{folderId}")

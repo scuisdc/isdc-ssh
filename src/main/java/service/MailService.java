@@ -14,7 +14,7 @@ public interface MailService {
 
     List<MailboxResponse> listAccount(User user);
 
-    List<FolderResponse> listFolder(Integer boxId);
+    List<FolderResponse> listFolder(Integer boxId, User user);
 
     boolean updateAccount(Mailbox mailbox, int boxId, User user);
 

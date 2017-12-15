@@ -25,10 +25,9 @@ public class AuthorizationInterceptor extends HandlerInterceptorAdapter {
                 if (userId.isPresent()) {
                     request.setAttribute(Constants.HEADER_USER_ID, userId.get());
                     return true;
-                } else {
-                    response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
                 }
-            } catch (IllegalArgumentException ignored) {
+            } catch (Exception e) {
+                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
             }
             return false;
         } else {

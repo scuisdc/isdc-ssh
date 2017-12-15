@@ -1,97 +1,43 @@
 package support;
 
 import entity.Mail;
-import entity.MailAttachment;
 import entity.MailFolder;
 import entity.Mailbox;
-import org.apache.james.mime4j.message.*;
-import org.apache.james.mime4j.message.BodyPart;
-import org.apache.james.mime4j.message.Message;
-import org.apache.james.mime4j.message.Multipart;
-import org.apache.james.mime4j.parser.MimeEntityConfig;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.mail.javamail.MimeMessageHelper;
 
 import javax.mail.*;
+import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
-import java.io.ByteArrayOutputStream;
+import javax.mail.internet.MimeMultipart;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
 
 public class MailUtils {
-    private static void parseBodyParts(Multipart multipart, StringBuffer txtBody, StringBuffer htmlBody, List<BodyPart> attachments) throws IOException {
-        for (BodyPart part : multipart.getBodyParts()) {
+    private static void parseBodyParts(MimeMultipart multipart, StringBuffer txtBody, StringBuffer htmlBody, List<javax.mail.BodyPart> attachments) throws IOException, MessagingException {
+        int count = multipart.getCount();
+        for (int i = 0; i < count; i++) {
+            javax.mail.BodyPart part = multipart.getBodyPart(i);
             if (part.isMimeType("text/plain")) {
                 String txt = getTxtPart(part);
                 txtBody.append(txt);
             } else if (part.isMimeType("text/html")) {
                 String html = getTxtPart(part);
                 htmlBody.append(html);
-            } else if (part.getDispositionType() != null && !part.getDispositionType().equals("")) {
+            } else if (part.getDisposition() != null && !part.getDisposition().equals("")) {
                 attachments.add(part);
             }
-
-            if (part.isMultipart()) {
-                parseBodyParts((Multipart) part.getBody(), txtBody, htmlBody, attachments);
+            if (isMultipart(part) && part.getContent() instanceof MimeMultipart) {
+                parseBodyParts((MimeMultipart) part.getContent(), txtBody, htmlBody, attachments);
             }
         }
     }
 
-    private static String getTxtPart(Entity part) throws IOException {
-        TextBody tb = (TextBody) part.getBody();
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        tb.writeTo(baos);
-        return new String(baos.toByteArray());
-    }
-
-    public static Mail parseMessage(InputStream data) {
-        Mail mail = new Mail();
-        mail.setAttachments(new ArrayList<>());
-        StringBuffer txtBody = new StringBuffer();
-        StringBuffer htmlBody = new StringBuffer();
-        List<BodyPart> attachments = new ArrayList();
-        try {
-            MimeEntityConfig config = new MimeEntityConfig();
-            config.setMaxContentLen(-1);
-            config.setCountLineNumbers(false);
-            config.setMaxHeaderCount(200);
-            config.setMaxLineLen(-1);
-            config.setStrictParsing(false);
-            Message mimeMsg = new Message(data, config);
-
-            mail.setTo(mimeMsg.getTo() == null ? null : mimeMsg.getTo().toString());
-            mail.setFrom(mimeMsg.getFrom() == null ? null : mimeMsg.getFrom().toString());
-            mail.setSubject(mimeMsg.getSubject());
-            mail.setSendDate(mimeMsg.getDate());
-            if (mimeMsg.isMultipart()) {
-                Multipart multipart = (Multipart) mimeMsg.getBody();
-                parseBodyParts(multipart, txtBody, htmlBody, attachments);
-            } else {
-                String text = getTxtPart(mimeMsg);
-                txtBody.append(text);
-            }
-
-            mail.setTextBody(txtBody.toString());
-            mail.setHtmlBody(htmlBody.toString());
-
-            for (BodyPart attach : attachments) {
-                MailAttachment attachment = new MailAttachment();
-                attachment.setFileName(attach.getFilename());
-                try (ByteArrayOutputStream outputStream = new ByteArrayOutputStream()) {
-                    BinaryBody bb = (BinaryBody) attach.getBody();
-                    bb.writeTo(outputStream);
-                    attachment.setFile(outputStream.toByteArray());
-                }
-                mail.getAttachments().add(attachment);
-            }
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return mail;
+    private static String getTxtPart(javax.mail.BodyPart part) throws IOException, MessagingException {
+        return (String) part.getContent();
     }
 
     public static void sendMail(Mailbox mailbox, Mail mail) {
@@ -150,22 +96,71 @@ public class MailUtils {
         javax.mail.Message[] messages = inbox.getMessages();
         for (javax.mail.Message message : messages) {
             try {
-                Mail mail = MailUtils.parseMessage(message.getInputStream());
-                if (mail.getFrom() == null) {
-                    mail.setFrom(message.getFrom()[0].toString());
+                Mail mail = new Mail();
+                StringBuffer txtBody = new StringBuffer();
+                StringBuffer htmlBody = new StringBuffer();
+                List<javax.mail.BodyPart> attachments = new ArrayList();
+                mail.setFrom("");
+                mail.setTo("");
+                mail.setAttachments(new ArrayList<>());
+                Arrays.asList(message.getFrom()).forEach(address -> {
+                    if (address instanceof InternetAddress) {
+                        mail.setFrom(mail.getFrom() + ((InternetAddress) address).getPersonal() +
+                                " <" + ((InternetAddress) address).getAddress() + ">,");
+                    } else {
+                        mail.setFrom(mail.getFrom() + address.toString() + ",");
+                    }
+                });
+
+                Arrays.asList(message.getRecipients(javax.mail.Message.RecipientType.TO)).forEach(address -> {
+                    if (address instanceof InternetAddress) {
+                        mail.setTo(mail.getTo() + ((InternetAddress) address).getPersonal() +
+                                " <" + ((InternetAddress) address).getAddress() + ">,");
+                    } else {
+                        mail.setTo(mail.getTo() + address.toString() + ",");
+                    }
+                });
+                mail.setContentType(message.getContentType());
+                Object content = message.getContent();
+                if (content instanceof MimeMultipart) {
+                    parseBodyParts((MimeMultipart) content, txtBody, htmlBody, attachments);
+                } else {
+                    getTxtPart((javax.mail.BodyPart) content);
                 }
-                if (mail.getSendDate() == null) {
-                    mail.setSendDate(message.getSentDate());
-                }
+//                for (javax.mail.BodyPart attach : attachments) {
+//                    MailAttachment attachment = new MailAttachment();
+//                    attachment.setFileName(attach.getFileName());
+//                    try (ByteArrayOutputStream outputStream = new ByteArrayOutputStream()) {
+//                        BinaryBody bb =  attach.getContent();
+//                        bb.writeTo(outputStream);
+//                        attachment.setFile(outputStream.toByteArray());
+//                    }
+//                    mail.getAttachments().add(attachment);
+//                }
+                mail.setTextBody(txtBody.toString());
+                mail.setHtmlBody(htmlBody.toString());
+                mail.setSubject(message.getSubject());
+                mail.setSendDate(message.getSentDate());
                 mail.setMailFolder(mailFolder);
                 mails.add(mail);
             } catch (IOException e) {
                 e.printStackTrace();
             }
-
         }
         inbox.close(false);
         store.close();
         return mails;
+    }
+
+    private static boolean isMultipart(javax.mail.BodyPart part) {
+
+        try {
+            String[] f = part.getHeader("Content-Type");
+            return f != null && f.length > 0 && part.isMimeType("multipart/");
+        } catch (MessagingException e) {
+            e.printStackTrace();
+        }
+        return false;
+
     }
 }
