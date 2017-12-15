@@ -125,7 +125,11 @@ public class MailUtils {
                 if (content instanceof MimeMultipart) {
                     parseBodyParts((MimeMultipart) content, txtBody, htmlBody, attachments);
                 } else {
-                    getTxtPart((javax.mail.BodyPart) content);
+                    if (content instanceof javax.mail.BodyPart) {
+                        txtBody.append(getTxtPart((javax.mail.BodyPart) content));
+                    } else {
+                        txtBody.append(content);
+                    }
                 }
 //                for (javax.mail.BodyPart attach : attachments) {
 //                    MailAttachment attachment = new MailAttachment();

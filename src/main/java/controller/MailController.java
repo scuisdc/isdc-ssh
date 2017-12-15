@@ -56,7 +56,7 @@ public class MailController {
         return new Response<>(mailService.deleteAccount(boxId, user) ? 200 : 500);
     }
 
-    @DeleteMapping(value = "")
+    @PostMapping(value = "delete")
     @Authorization
     public Response deleteAccounts(@RequestBody List<Integer> boxIds, @CurrentUser User user) {
         return new Response<>(mailService.deleteAccounts(boxIds, user) ? 200 : 500);
