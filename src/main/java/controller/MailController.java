@@ -93,7 +93,14 @@ public class MailController {
 
     @DeleteMapping(value = "{boxId}/{folderId}/{mailId}")
     @Authorization
-    public Response deleteMail(@PathVariable("mailId") Integer mailId, @CurrentUser User user, @RequestBody Mail mail) {
+    public Response deleteMail(@PathVariable("mailId") Integer mailId, @CurrentUser User user) {
+        return new Response<>(200);
+    }
+
+
+    @PostMapping(value = "{boxId}/{folderId}/delete")
+    @Authorization
+    public Response deleteMails(@CurrentUser User user, @RequestBody List<Integer> mailIds) {
         return new Response<>(200);
     }
 
