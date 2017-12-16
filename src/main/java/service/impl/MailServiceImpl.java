@@ -149,6 +149,7 @@ public class MailServiceImpl implements MailService {
                 e.printStackTrace();
                 return false;
             }
+            mail.setMailFolder(sent);
             sent.getMailList().add(mail);
             mailFolderDao.update(sent);
             return true;
