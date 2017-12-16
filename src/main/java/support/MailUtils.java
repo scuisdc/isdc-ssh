@@ -65,6 +65,9 @@ public class MailUtils {
     }
 
     public static List<Mail> readMails(Mailbox mailbox, MailFolder mailFolder) throws MessagingException {
+        if (!mailFolder.getFolderType().equals(MailFolder.FolderType.INBOX)) {
+            return mailFolder.getMailList();
+        }
         List<Mail> mails = new ArrayList<>();
         Properties props = new Properties();
         props.put("mail.pop3.socketFactory.class", "javax.net.ssl.SSLSocketFactory");
