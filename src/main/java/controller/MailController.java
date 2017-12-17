@@ -82,6 +82,12 @@ public class MailController {
         return new Response<>(200);
     }
 
+    @PostMapping(value = "{boxId}/{folderId}/{mailId}")
+    @Authorization
+    public Response markAsSeen(@PathVariable("mailId") Integer mailId, @CurrentUser User user) {
+        return new Response<>(mailService.markAsSeen(mailId, user) ? 200 : -1);
+    }
+
 
     @PutMapping(value = "{boxId}")
     @Authorization

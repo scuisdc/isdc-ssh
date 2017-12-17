@@ -186,4 +186,15 @@ public class MailServiceImpl implements MailService {
         return false;
     }
 
+    @Override
+    public boolean markAsSeen(Integer mailId, User user) {
+        Mail mail = mailDAO.findOne(mailId);
+        if (mail != null && mail.getMailFolder().getMailbox().getUser().getId().equals(user.getId())) {
+            mail.setSeen(!mail.isSeen());
+            mailDAO.update(mail);
+            return true;
+        }
+        return false;
+    }
+
 }

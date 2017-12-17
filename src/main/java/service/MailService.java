@@ -28,4 +28,6 @@ public interface MailService {
     boolean sendMail(Integer boxId, User user, Mail mail);
 
     boolean deleteMail(Integer folderId, Integer mailId, User user);
+
+    boolean markAsSeen(Integer mailId, User user);
 }

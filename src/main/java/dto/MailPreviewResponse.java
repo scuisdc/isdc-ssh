@@ -19,6 +19,8 @@ public class MailPreviewResponse {
 
     private Date sendDate;
 
+    private boolean seen;
+
 
     public Integer getId() {
         return id;
@@ -85,4 +87,11 @@ public class MailPreviewResponse {
     }
 
 
+    public boolean isSeen() {
+        return seen;
+    }
+
+    public void setSeen(boolean seen) {
+        this.seen = seen;
+    }
 }
