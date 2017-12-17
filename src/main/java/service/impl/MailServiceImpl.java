@@ -18,7 +18,6 @@ import support.MailUtils;
 
 import javax.mail.MessagingException;
 import javax.transaction.Transactional;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -49,6 +48,16 @@ public class MailServiceImpl implements MailService {
             inbox.setMailbox(mailbox);
             inbox.setMailList(MailUtils.readMails(mailbox, inbox));
             mailbox.getFolders().add(inbox);
+            MailFolder trash = new MailFolder();
+            trash.setAlias("废纸篓");
+            trash.setFolderType(MailFolder.FolderType.TRASH);
+            trash.setMailbox(mailbox);
+            mailbox.getFolders().add(trash);
+            MailFolder sent = new MailFolder();
+            sent.setAlias("发件箱");
+            sent.setFolderType(MailFolder.FolderType.SENT);
+            sent.setMailbox(mailbox);
+            mailbox.getFolders().add(sent);
             mailboxDAO.save(mailbox);
         } catch (MessagingException e) {
             e.printStackTrace();
@@ -135,23 +144,18 @@ public class MailServiceImpl implements MailService {
             Optional<MailFolder> first = account.getFolders().stream().filter(f -> f.getFolderType().equals(MailFolder.FolderType.SENT)).findFirst();
             if (first.isPresent()) {
                 sent = first.get();
-            } else {
-                sent = new MailFolder();
-                sent.setMailbox(account);
-                sent.setMailList(new ArrayList<>());
-                sent.setFolderType(MailFolder.FolderType.SENT);
-                sent.setAlias("发件箱");
+                try {
+                    MailUtils.sendMail(account, mail);
+                } catch (MessagingException e) {
+                    e.printStackTrace();
+                    return false;
+                }
+                mail.setMailFolder(sent);
+                sent.getMailList().add(mail);
+                mailFolderDao.update(sent);
+                return true;
             }
-            try {
-                MailUtils.sendMail(account, mail);
-            } catch (MessagingException e) {
-                e.printStackTrace();
-                return false;
-            }
-            mail.setMailFolder(sent);
-            sent.getMailList().add(mail);
-            mailFolderDao.update(sent);
-            return true;
+
         }
         return false;
     }
@@ -162,8 +166,7 @@ public class MailServiceImpl implements MailService {
         if (folder != null && folder.getMailbox().getUser().getId().equals(user.getId())) {
             Mail mail = mailDAO.findOne(mailId);
             if (mail != null && mail.getMailFolder().getId().equals(folderId)) {
-                moveOrDeleteMail(folder, mail);
-                return true;
+                return moveOrDeleteMail(folder, mail);
             }
         }
         return false;
@@ -190,25 +193,22 @@ public class MailServiceImpl implements MailService {
         return false;
     }
 
-    private void moveOrDeleteMail(MailFolder folder, Mail mail) {
+    private boolean moveOrDeleteMail(MailFolder folder, Mail mail) {
         MailFolder trash;
         if (folder.getFolderType().equals(MailFolder.FolderType.INBOX)) {
             Optional<MailFolder> first = folder.getMailbox().getFolders().stream().filter(f -> f.getFolderType().equals(MailFolder.FolderType.TRASH)).findFirst();
             if (first.isPresent()) {
                 trash = first.get();
-            } else {
-                trash = new MailFolder();
-                trash.setMailbox(folder.getMailbox());
-                trash.setMailList(new ArrayList<>());
-                trash.setFolderType(MailFolder.FolderType.TRASH);
-                trash.setAlias("废纸篓");
+                mail.setMailFolder(trash);
+                trash.getMailList().add(mail);
+                mailFolderDao.update(trash);
+                return true;
             }
-            mail.setMailFolder(trash);
-            trash.getMailList().add(mail);
-            mailFolderDao.update(trash);
         } else {
             mailDAO.delete(mail);
+            return true;
         }
+        return false;
     }
 
 }

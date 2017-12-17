@@ -92,7 +92,6 @@ public class MailController {
     @PutMapping(value = "{boxId}")
     @Authorization
     public Response sendMail(@PathVariable("boxId") Integer boxId, @CurrentUser User user, @RequestBody Mail mail) {
-
         return new Response<>(mailService.sendMail(boxId, user, mail) ? 200 : -1);
     }
 
