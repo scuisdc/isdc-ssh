@@ -44,7 +44,7 @@ public class MailServiceImpl implements MailService {
     public boolean addAccount(Mailbox mailbox) {
         try {
             MailFolder inbox = new MailFolder();
-            inbox.setAlias("shoujianxiang");
+            inbox.setAlias("收件箱");
             inbox.setFolderType(MailFolder.FolderType.INBOX);
             inbox.setMailbox(mailbox);
             inbox.setMailList(MailUtils.readMails(mailbox, inbox));
@@ -140,7 +140,7 @@ public class MailServiceImpl implements MailService {
                 sent.setMailbox(account);
                 sent.setMailList(new ArrayList<>());
                 sent.setFolderType(MailFolder.FolderType.SENT);
-                sent.setAlias("SENT");
+                sent.setAlias("发件箱");
             }
             try {
                 MailUtils.sendMail(account, mail);
@@ -162,24 +162,7 @@ public class MailServiceImpl implements MailService {
         if (folder != null && folder.getMailbox().getUser().getId().equals(user.getId())) {
             Mail mail = mailDAO.findOne(mailId);
             if (mail != null && mail.getMailFolder().getId().equals(folderId)) {
-                MailFolder trash;
-                if (folder.getFolderType().equals(MailFolder.FolderType.INBOX)) {
-                    Optional<MailFolder> first = folder.getMailbox().getFolders().stream().filter(f -> f.getFolderType().equals(MailFolder.FolderType.TRASH)).findFirst();
-                    if (first.isPresent()) {
-                        trash = first.get();
-                    } else {
-                        trash = new MailFolder();
-                        trash.setMailbox(folder.getMailbox());
-                        trash.setMailList(new ArrayList<>());
-                        trash.setFolderType(MailFolder.FolderType.TRASH);
-                        trash.setAlias("TRASH");
-                    }
-                    mail.setMailFolder(trash);
-                    trash.getMailList().add(mail);
-                    mailFolderDao.update(trash);
-                } else {
-                    mailDAO.delete(mail);
-                }
+                moveOrDeleteMail(folder, mail);
                 return true;
             }
         }
@@ -195,6 +178,37 @@ public class MailServiceImpl implements MailService {
             return true;
         }
         return false;
+    }
+
+    @Override
+    public boolean deleteMails(Integer folderId, List<Integer> mailIds, User user) {
+        MailFolder folder = mailFolderDao.findOne(folderId);
+        if (folder != null && folder.getMailbox().getUser().getId().equals(user.getId())) {
+            mailIds.stream().map(mailDAO::findOne).filter(mail -> mail.getMailFolder().getId().equals(folderId)).forEach(mail -> moveOrDeleteMail(folder, mail));
+            return true;
+        }
+        return false;
+    }
+
+    private void moveOrDeleteMail(MailFolder folder, Mail mail) {
+        MailFolder trash;
+        if (folder.getFolderType().equals(MailFolder.FolderType.INBOX)) {
+            Optional<MailFolder> first = folder.getMailbox().getFolders().stream().filter(f -> f.getFolderType().equals(MailFolder.FolderType.TRASH)).findFirst();
+            if (first.isPresent()) {
+                trash = first.get();
+            } else {
+                trash = new MailFolder();
+                trash.setMailbox(folder.getMailbox());
+                trash.setMailList(new ArrayList<>());
+                trash.setFolderType(MailFolder.FolderType.TRASH);
+                trash.setAlias("废纸篓");
+            }
+            mail.setMailFolder(trash);
+            trash.getMailList().add(mail);
+            mailFolderDao.update(trash);
+        } else {
+            mailDAO.delete(mail);
+        }
     }
 
 }

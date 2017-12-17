@@ -106,8 +106,8 @@ public class MailController {
 
     @PostMapping(value = "{boxId}/{folderId}/delete")
     @Authorization
-    public Response deleteMails(@CurrentUser User user, @RequestBody List<Integer> mailIds) {
-        return new Response<>(200);
+    public Response deleteMails(@CurrentUser User user, @PathVariable("folderId") Integer folderId, @RequestBody List<Integer> mailIds) {
+        return new Response<>(mailService.deleteMails(folderId, mailIds, user) ? 200 : -1);
     }
 
 

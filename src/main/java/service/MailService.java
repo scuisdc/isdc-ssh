@@ -30,4 +30,6 @@ public interface MailService {
     boolean deleteMail(Integer folderId, Integer mailId, User user);
 
     boolean markAsSeen(Integer mailId, User user);
+
+    boolean deleteMails(Integer folderId, List<Integer> mailIds, User user);
 }
