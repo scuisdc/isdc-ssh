@@ -26,4 +26,6 @@ public interface MailService {
     List<MailPreviewResponse> readMails(Integer boxId, Integer folderId, User user);
 
     boolean sendMail(Integer boxId, User user, Mail mail);
+
+    boolean deleteMail(Integer folderId, Integer mailId, User user);
 }

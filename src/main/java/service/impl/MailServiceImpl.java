@@ -115,7 +115,6 @@ public class MailServiceImpl implements MailService {
                     return null;
                 }
                 MailFolder folder = first.get();
-                folder.getMailList().clear();
                 folder.getMailList().addAll(MailUtils.readMails(account, folder));
                 mailboxDAO.save(account);
                 return folder.getMailList().stream().map(mail -> modelMapper.map(mail, MailPreviewResponse.class)).collect(Collectors.toList());
@@ -153,6 +152,36 @@ public class MailServiceImpl implements MailService {
             sent.getMailList().add(mail);
             mailFolderDao.update(sent);
             return true;
+        }
+        return false;
+    }
+
+    @Override
+    public boolean deleteMail(Integer folderId, Integer mailId, User user) {
+        MailFolder folder = mailFolderDao.findOne(folderId);
+        if (folder != null && folder.getMailbox().getUser().getId().equals(user.getId())) {
+            Mail mail = mailDAO.findOne(mailId);
+            if (mail != null && mail.getMailFolder().getId().equals(folderId)) {
+                MailFolder trash;
+                if (folder.getFolderType().equals(MailFolder.FolderType.INBOX)) {
+                    Optional<MailFolder> first = folder.getMailbox().getFolders().stream().filter(f -> f.getFolderType().equals(MailFolder.FolderType.TRASH)).findFirst();
+                    if (first.isPresent()) {
+                        trash = first.get();
+                    } else {
+                        trash = new MailFolder();
+                        trash.setMailbox(folder.getMailbox());
+                        trash.setMailList(new ArrayList<>());
+                        trash.setFolderType(MailFolder.FolderType.TRASH);
+                        trash.setAlias("TRASH");
+                    }
+                    mail.setMailFolder(trash);
+                    trash.getMailList().add(mail);
+                    mailFolderDao.update(trash);
+                } else {
+                    mailDAO.delete(mail);
+                }
+                return true;
+            }
         }
         return false;
     }

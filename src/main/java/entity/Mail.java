@@ -32,6 +32,9 @@ public class Mail {
     @OneToMany(targetEntity = MailAttachment.class, cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<MailAttachment> attachments;
 
+    @Column(columnDefinition = "boolean default false")
+    private boolean seen = false;
+
 
     @Temporal(TemporalType.TIMESTAMP)
     private Date sendDate;
@@ -118,5 +121,13 @@ public class Mail {
 
     public void setAttachments(List<MailAttachment> attachments) {
         this.attachments = attachments;
+    }
+
+    public boolean isSeen() {
+        return seen;
+    }
+
+    public void setSeen(boolean seen) {
+        this.seen = seen;
     }
 }

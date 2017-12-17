@@ -7,14 +7,12 @@ import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.mail.javamail.MimeMessageHelper;
 
 import javax.mail.*;
+import javax.mail.internet.ContentType;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Properties;
+import java.util.*;
 
 public class MailUtils {
     private static void parseBodyParts(MimeMultipart multipart, StringBuffer txtBody, StringBuffer htmlBody, List<javax.mail.BodyPart> attachments) throws IOException, MessagingException {
@@ -60,13 +58,15 @@ public class MailUtils {
         helper.setTo(mail.getTo().split(","));
         helper.setSubject(mail.getSubject());
         helper.setText(mail.getTextBody() == null ? mail.getHtmlBody() : mail.getTextBody(), mail.getTextBody() == null);
+        message.saveChanges();
+        message.setHeader("Content-Transfer-Encoding", "base64");
         sender.send(message);
 
     }
 
     public static List<Mail> readMails(Mailbox mailbox, MailFolder mailFolder) throws MessagingException {
         if (!mailFolder.getFolderType().equals(MailFolder.FolderType.INBOX)) {
-            return mailFolder.getMailList();
+            return Collections.emptyList();
         }
         List<Mail> mails = new ArrayList<>();
         Properties props = new Properties();
@@ -92,10 +92,16 @@ public class MailUtils {
         store.connect(mailbox.getPop3Server(), mailbox.getAccount(), mailbox.getPassword());
 
         Folder inbox = store.getFolder("INBOX");
-        inbox.open(Folder.READ_ONLY);
+        try {
+            inbox.open(Folder.READ_WRITE);
+        } catch (MessagingException e) {
+            inbox.open(Folder.READ_ONLY);
+        }
+
 
         javax.mail.Message[] messages = inbox.getMessages();
         for (javax.mail.Message message : messages) {
+            message.setFlag(Flags.Flag.DELETED, true);
             try {
                 Mail mail = new Mail();
                 StringBuffer txtBody = new StringBuffer();
@@ -121,7 +127,7 @@ public class MailUtils {
                         mail.setTo(mail.getTo() + address.toString() + ",");
                     }
                 });
-                mail.setContentType(message.getContentType());
+                mail.setContentType(new ContentType(message.getContentType()).getBaseType());
                 Object content = message.getContent();
                 if (content instanceof MimeMultipart) {
                     parseBodyParts((MimeMultipart) content, txtBody, htmlBody, attachments);
@@ -152,7 +158,7 @@ public class MailUtils {
                 e.printStackTrace();
             }
         }
-        inbox.close(false);
+        inbox.close(true);
         store.close();
         return mails;
     }

@@ -93,8 +93,8 @@ public class MailController {
 
     @DeleteMapping(value = "{boxId}/{folderId}/{mailId}")
     @Authorization
-    public Response deleteMail(@PathVariable("mailId") Integer mailId, @CurrentUser User user) {
-        return new Response<>(200);
+    public Response deleteMail(@PathVariable("mailId") Integer mailId, @PathVariable("folderId") Integer folderId, @CurrentUser User user) {
+        return new Response<>(mailService.deleteMail(folderId, mailId, user) ? 200 : 500);
     }
 
 
