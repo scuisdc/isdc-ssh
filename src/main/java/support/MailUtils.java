@@ -110,23 +110,29 @@ public class MailUtils {
                 mail.setFrom("");
                 mail.setTo("");
                 mail.setAttachments(new ArrayList<>());
-                Arrays.asList(message.getFrom()).forEach(address -> {
-                    if (address instanceof InternetAddress) {
-                        mail.setFrom(mail.getFrom() + ((InternetAddress) address).getPersonal() +
-                                " <" + ((InternetAddress) address).getAddress() + ">,");
-                    } else {
-                        mail.setFrom(mail.getFrom() + address.toString() + ",");
-                    }
-                });
+                Address[] from = message.getFrom();
+                if (from != null) {
+                    Arrays.asList(from).forEach(address -> {
+                        if (address instanceof InternetAddress) {
+                            mail.setFrom(mail.getFrom() + ((InternetAddress) address).getPersonal() +
+                                    " <" + ((InternetAddress) address).getAddress() + ">,");
+                        } else {
+                            mail.setFrom(mail.getFrom() + address.toString() + ",");
+                        }
+                    });
+                }
+                Address[] recipients = message.getRecipients(Message.RecipientType.TO);
+                if (recipients != null) {
+                    Arrays.asList(recipients).forEach(address -> {
+                        if (address instanceof InternetAddress) {
+                            mail.setTo(mail.getTo() + ((InternetAddress) address).getPersonal() +
+                                    " <" + ((InternetAddress) address).getAddress() + ">,");
+                        } else {
+                            mail.setTo(mail.getTo() + address.toString() + ",");
+                        }
+                    });
+                }
 
-                Arrays.asList(message.getRecipients(javax.mail.Message.RecipientType.TO)).forEach(address -> {
-                    if (address instanceof InternetAddress) {
-                        mail.setTo(mail.getTo() + ((InternetAddress) address).getPersonal() +
-                                " <" + ((InternetAddress) address).getAddress() + ">,");
-                    } else {
-                        mail.setTo(mail.getTo() + address.toString() + ",");
-                    }
-                });
                 mail.setContentType(new ContentType(message.getContentType()).getBaseType());
                 Object content = message.getContent();
                 if (content instanceof MimeMultipart) {
