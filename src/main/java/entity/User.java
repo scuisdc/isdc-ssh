@@ -39,9 +39,6 @@ public class User {
     @Column(name = "access_token", unique = true)
     private String accessToken;
 
-    @OneToMany(mappedBy = "user")
-    private List<Mailbox> mailboxList;
-
     @OneToMany(mappedBy = "author")
     private List<Post> postList;
 
