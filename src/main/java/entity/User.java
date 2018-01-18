@@ -1,7 +1,6 @@
 package entity;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import org.apache.commons.lang3.RandomStringUtils;
 
 import javax.persistence.*;
 import java.util.List;
@@ -37,11 +36,8 @@ public class User {
     private Boolean isRoot;
 
 
-    @Column(name = "access_token", unique = true, length = 50)
+    @Column(name = "access_token", unique = true)
     private String accessToken;
-
-    @OneToMany(mappedBy = "user")
-    private List<Mailbox> mailboxList;
 
     @OneToMany(mappedBy = "author")
     private List<Post> postList;
@@ -100,10 +96,6 @@ public class User {
 
     public void setAccessToken(String accessToken) {
         this.accessToken = accessToken;
-    }
-
-    public void generateToken() {
-        setAccessToken(RandomStringUtils.randomAlphanumeric(16));
     }
 
     public Boolean getRoot() {
